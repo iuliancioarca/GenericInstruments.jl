@@ -21,19 +21,19 @@ get_idn(psu2)
 reset_instr(psu1)
 reset_instr(psu2)
 # Set range
-set_range(psu1,"low")
-set_range(psu2,"high","output1")
+set_range(psu1,"output1","low")
+set_range(psu2,"output1","high")
 # Set voltage
-set_volt(psu1,5)
-set_volt(psu2,3,"output1")
+set_volt(psu1,"output1",5)
+set_volt(psu2,"output1",3)
 # Set current compliance
-set_compl(psu1,0.6)
-set_compl(psu2,1.1,"output1")
+set_compl(psu1,"output1",0.6)
+set_compl(psu2,"output1",1.1)
 # Output on/off
-set_outp(psu1,"on")
-set_outp(psu2,"on","output1")
+set_outp(psu1,"output1","on")
+set_outp(psu2,"output1","on")
 # Multiple instructions
-set_volt_compl(psu1, 5, 0.1)
+set_volt_compl(psu1,"output1", 5, 0.1)
 # Disconnect everything
 set_instr_state!(rm, psu1, psu2; act = disconnect!)
 ####################################
@@ -44,5 +44,15 @@ get_idn(fg1)
 reset_instr(fg1)
 # Wfm
 set_wfm(fg1)
+# Amplitude
+set_amplit(fg1,1,1)
+# Offset
+set_offs(fg1,1,0.4)
+# High level
+set_hilev(fg1,1,3)
+# Low level
+set_lolev(fg1,1,1)
+# Duty cycle
+set_duty(fg1,1,"square",22)
 # Disconnect everything
 set_instr_state!(rm, fg1; act = disconnect!)
