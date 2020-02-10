@@ -23,6 +23,8 @@ set_trig_lev(fgen::T,ch=1,lev=1) where {T<:F335x2} = write(fgen.obj,"TRIG$ch:LEV
 set_trig_slope(fgen::T,ch=1,slp="positive") where {T<:Union{F332x1,F335x2}} = write(fgen.obj,"TRIG$ch:SLOP $slp")
 # Waveform
 set_wfm(fgen::T,ch=1,func="sin") where {T<:Union{F332x1,F335x2}} = write(fgen.obj,"SOURce$ch:FUNC $func")
+# ARB Waveform
+set_arb_wfm(fgen::T,ch=1,arb="mywfm") where {T<:Union{F332x1,F335x2}} = write(fgen.obj,"SOURce$ch:FUNCtion:ARBitrary $arb")
 # Amplitude
 set_amplit(fgen::T,ch=1,unit="vpp",volt=0.01) where {T<:Union{F332x1,F335x2}} = write(fgen.obj,"SOURce$ch:VOLT:UNIT $unit\n;SOURce$ch:VOLT $volt")
 # Offset
@@ -77,6 +79,64 @@ set_burst_per(fgen::T,ch=1,per=0.01) where {T<:F332x1} = write(fgen.obj,"BURS:IN
 # Burst phase
 set_burst_phase(fgen::T,ch=1,unit="deg",phase=0) where {T<:F335x2} = write(fgen.obj,"UNIT:ANGL $unit\n;SOUR$ch:BURS:PHAS $phase")
 set_burst_phase(fgen::T,ch=1,unit="deg",phase=0) where {T<:F332x1} = write(fgen.obj,"UNIT:ANGL $unit\n;BURS:PHAS $phase")
+# Sync state
+set_sync_stat(fgen::T,ch=1,st="on") where {T<:Union{F332x1,F335x2}} = write(fgen.obj,"OUTP$ch:SYNC $st")
+# Sync Source
+set_sync_sour(fgen::T,sour=1) where {T<:F335x2} = write(fgen.obj,"OUTP:SYNC:SOUR ch$sour")
+# Sync Polarity
+set_sync_pol(fgen::T,ch=1,pol="normal") where {T<:F335x2} = write(fgen.obj,"OUTP$ch:SYNC:POL $pol")
+# Output trigger state
+set_trig_stat(fgen::T,st="normal") where {T<:Union{F332x1,F335x2}} = write(fgen.obj,"OUTP:TRIG $st")
+# Output trigger slope
+set_trig_slope(fgen::T,slp="positive") where {T<:Union{F332x1,F335x2}} = write(fgen.obj,"OUTP:TRIG:SLOP $slp")
+# Output trigger source
+set_out_trig_sour(fgen::T,sour=1) where {T<:F332x1} = write(fgen.obj,"OUTP:TRIG:SOUR ch$sour")
+# Software trigger
+send_soft_trig(fgen::T) where {T<:Union{F332x1,F335x2}} = write(fgen.obj,"*TRG")
+# Beeper
+set_beep(fgen::T,st="off") where {T<:Union{F332x1,F335x2}} = write(fgen.obj,"SYST:BEEP:STAT $st")
+# Query action completed
+query_complete(fgen::T) where {T<:Union{F332x1,F335x2}} = query(fgen.obj,"*OPC?")
+# Wait for action to complete
+wait_complete(fgen::T) where {T<:Union{F332x1,F335x2}} = query(fgen.obj,"*WAI")
+# Read error
+query_error(fgen::T) where {T<:Union{F332x1,F335x2}} = query(fgen.obj,"SYST:ERR?")
+# Arb sample rate
+set_sample_rate(fgen::T,ch=1,srate=1e6) where {T<:Union{F332x1,F335x2}} = write(fgen.obj,"SOURce$ch:FUNC:ARB:SRAT $srate")
+# Clear all arbs from volatile memory
+clear_arbs(fgen::T,ch=1) where {T<:Union{F332x1,F335x2}} = write(fgen.obj,"SOURce$ch:DATA:VOLatile:CLEar")
+
+# Send arb waveform to volatile memory
+function send_arb(fgen::T,ch,wfm,dt=1e-6,name="mywfm") where {T<:F335x2}
+	write(fgen.obj, "FORM:BORD SWAP")
+	arb_bytes = string(length(wfm) * 4)
+	arb_bytes_len = string(length(arb_bytes))
+	header = "SOURce$ch:DATA:ARBitrary "*name*", #"*arb_bytes_len*arb_bytes
+	header = Vector{UInt8}(header)
+	binblock_bytes = reinterpret(UInt8, wfm)[:]
+	Instruments.viWrite(fgen.obj.handle, [header; binblock_bytes])
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

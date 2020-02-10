@@ -42,6 +42,8 @@ set_instr_state!(rm, psu1, psu2; act = disconnect!)
 get_idn(fg1)
 # Reset
 reset_instr(fg1)
+# Output load INF
+set_load(fg1,1,"INF")
 # Wfm
 set_wfm(fg1)
 # Amplitude
@@ -54,5 +56,15 @@ set_hilev(fg1,1,3)
 set_lolev(fg1,1,1)
 # Duty cycle
 set_duty(fg1,1,"square",22)
+# Arbitrary waveform
+clear_arbs(fg1,1)
+wfm = Float32.([0,0, 0,1, 1,1,1,-1,-1,-1,-1,-1,1,1,1, 0, 0,0,0,0]) # normed to -1:1
+send_arb(fg1,1,wfm,1e-7,"mywfm")
+set_wfm(fg1,1,"ARB")
+set_arb_wfm(fg1,1,"mywfm")
+set_burst_stat(fg1,1,"on")
+set_trig_sour(fg1,1,"BUS")
+set_outp(fg1,1,"on")
+send_soft_trig(fg1)
 # Disconnect everything
 set_instr_state!(rm, fg1; act = disconnect!)
