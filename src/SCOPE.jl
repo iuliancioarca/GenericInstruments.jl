@@ -25,4 +25,68 @@ set_coupling(scope::T,ch=1,cpl=1) where {T<:LCR6xxx} = write(scope.obj,"VBS app.
 set_ch_state(scope::T,ch=1,st="on") where {T<:LCR6xxx} = write(scope.obj,"VBS app.Acquisition.C$ch.View=$st")
 # Probe attenuation
 set_atten(scope::T,ch=1,att=10) where {T<:LCR6xxx} = write(scope.obj,"VBS app.Acquisition.C$ch.ProbeAttenuation=$att")
+# Screen Gridmode
+set_gridmode(scope::T,gridmode="Single") where {T<:LCR6xxx} = write(scope.obj,"VBS app.Display.GridMode=$gridmode")
+# Nr of averages
+set_nr_avg(scope::T,ch=1,nr=1) where {T<:LCR6xxx} = write(scope.obj,"VBS app.Acquisition.C$ch.AverageSweeps=$nr")
+# EnhanceRes
+set_eres(scope::T,ch=1,bits=0) where {T<:LCR6xxx} = write(scope.obj,"VBS app.Acquisition.C$ch.EnhanceResType=$bits")
+# Degauss
+degauss(scope::T,ch=1,probe="CP030A") where {T<:LCR6xxx} = write(scope.obj,"VBS app.Acquisition.C$ch.InputB.$probe.Degauss")
+# Clear sweeps
+clear_sweeps(scope::T) where {T<:LCR6xxx} = write(scope.obj,"VBS app.ClearSweeps")
+# Nr of acquisition points
+function set_nr_pts(scope::T,npts=1e6) where {T<:LCR6xxx} 
+	write(scope.obj,"VBS app.Acquisition.Horizontal.Maximize=0")
+	write(scope.obj,"VBS app.Acquisition.Horizontal.MaxSamples=$(Int64(npts))")
+end
+# Sampling rate
+function set_nr_pts(scope::T,sr=1e6) where {T<:LCR6xxx} 
+	write(scope.obj,"VBS app.Acquisition.Horizontal.Maximize=1")
+	write(scope.obj,"VBS app.Acquisition.Horizontal.SampleRate=$(Int64(sr))")
+end
+# Acquisition duration
+set_hduration(scope::T,d=1e-3) where {T<:LCR6xxx} = write(scope.obj,"VBS app.Acquisition.Horizontal.HorScale=$(d/10)")
+# Horizontal offset origin
+set_hoffs_div(scope::T,href=1) where {T<:LCR6xxx} = write(scope.obj,"VBS app.Acquisition.Horizontal.HorOffsetOrigin=$href")
+# Fetch waveform
+function fetch_wfm(scope::T,ch=1) where {T<:LCR6xxx}
+npts = query(scope.obj,"VBS? Return=app.Acquisition.Horizontal.NumPoints")
+npts = parse(Int64,replace(uppercase(npts),"VBS"=>"")) 
+samples = query(scope.obj,"VBS? return=app.Acquisition.C$ch.Out.Result.Samples'")
+samples =  parse(Int64, samples)
+data = query(scope.obj,"GetScaledWaveformWithTimesC$ch)],samples,0)")
+#C1:WAVEFORM?; maybe it works.....
+end
+# Set Measurement
+function set_meas(scope::T,ch=1,fct="amplitude",par=1,vw="on") where {T<:LCR6xxx}
+	write(scope.obj,"VBS app.Measure.P$par.ParamEngine=$fct")
+	write(scope.obj,"VBS app.Measure.P$par.Source1=C$ch")
+	write(scope.obj,"VBS app.Measure.P$par.View=$vw")
+end
+# Get Measurement
+get_meas(scope::T,par=1) where {T<:LCR6xxx} = query(scope.obj,"VBS? Return=app.Measure.P$par.Out.Result.Value")
+# Set trigger source
+set_trg_src(scope::T,ch=1) where {T<:LCR6xxx} = write(scope.obj,"VBS app.Acquisition.Trigger.Edge.Source=ch$ch")
+# Set trigger type
+set_trg_typ(scope::T,tp="edge") where {T<:LCR6xxx} = write(scope.obj,"VBS app.Acquisition.Trigger.Type=$tp")
+# Set trigger mode
+set_trg_mode(scope::T,mode="normal") where {T<:LCR6xxx} = write(scope.obj,"VBS app.Acquisition.TriggerMode=$mode")
+# Set trigger slope
+set_trg_slope(scope::T,ch=1,slp="positive") where {T<:LCR6xxx} = write(scope.obj,"VBS app.Acquisition.Trigger.ch$(c)hSlope=$slp")
+# Set trigger level
+set_trg_lev(scope::T,ch=1,lev=1) where {T<:LCR6xxx} = write(scope.obj,"VBS app.Acquisition.Trigger.c$(ch)Level=$lev")
+# Set trigger holdoff
+set_trg_holdoff(scope::T,hf=1e-9) where {T<:LCR6xxx} = write(scope.obj,"VBS app.Acquisition.Trigger.Edge.HoldoffTime=$hf")
+# Trigger delay time
+set_hoffs_t(scope::T,href=1e-3) where {T<:LCR6xxx} = write(scope.obj,"VBS app.Acquisition.Horizontal.HorOffset=$href")
+# Set trigger coupling
+set_trg_cpl(scope::T,ch=1,cpl="dc") where {T<:LCR6xxx} = write(scope.obj,"VBS app.Acquisition.Trigger.C$(ch)Coupling=$cpl")
+
+# BW limit
+set_bw_lim(scope::T,ch=1,bw="full") where {T<:LCR6xxx} = write(scope.obj,"VBS app.Acquisition.C$ch.BandwidthLimit=$bw")
+
+
+
+
 end #endmodule
