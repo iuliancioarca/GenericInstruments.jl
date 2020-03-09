@@ -76,6 +76,7 @@ GI.FGEN.send_soft_trig(fg1)
 GI.FGEN.set_instr_state!(rm, fg1; act = GI.disconnect!)
 ```
 - SCOPE
+```
 GI.SCOPE.set_instr_state!(rm, scope1; act = GI.connect!)
 # IDN
 GI.SCOPE.get_idn(scope1)
