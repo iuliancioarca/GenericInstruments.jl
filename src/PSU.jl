@@ -10,7 +10,7 @@ include("INSTR_TYPES.jl")
 # Reset
 reset_instr(psu::T) where {T<:Union{E364x1,E364x2}} = write(psu.obj,"*RST")
 # Clear
-clear_instr(fgen::T) where {T<:Union{E364x1,E364x2}} = write(psu.obj,"*CLS") 
+clear_instr(psu::T) where {T<:Union{E364x1,E364x2}} = write(psu.obj,"*CLS") 
 # IDN
 get_idn(psu::T) where {T<:Union{E364x1,E364x2}} = query(psu.obj,"*IDN?")
 # Set voltage range

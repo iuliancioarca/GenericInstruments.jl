@@ -16,3 +16,13 @@ F335x2 = Union{INSTR{:Agilent33500B},
 	INSTR{:Keysight33500B},
 	INSTR{:Agilent33522A}
 	}
+	
+# DMM
+KE200x = Union{INSTR{:Keithley2000},
+	INSTR{:Keithley2001}
+	}
+	
+# SCOPE
+LCR6xxx = Union{INSTR{:HDO6054A},
+	INSTR{:HRO64zi}
+	}

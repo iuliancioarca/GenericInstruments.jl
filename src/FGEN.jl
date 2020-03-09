@@ -88,9 +88,9 @@ set_sync_sour(fgen::T,sour=1) where {T<:F335x2} = write(fgen.obj,"OUTP:SYNC:SOUR
 # Sync Polarity
 set_sync_pol(fgen::T,ch=1,pol="normal") where {T<:F335x2} = write(fgen.obj,"OUTP$ch:SYNC:POL $pol")
 # Output trigger state
-set_trig_stat(fgen::T,st="normal") where {T<:Union{F332x1,F335x2}} = write(fgen.obj,"OUTP:TRIG $st")
+set_out_trig_stat(fgen::T,st="normal") where {T<:Union{F332x1,F335x2}} = write(fgen.obj,"OUTP:TRIG $st")
 # Output trigger slope
-set_trig_slope(fgen::T,slp="positive") where {T<:Union{F332x1,F335x2}} = write(fgen.obj,"OUTP:TRIG:SLOP $slp")
+set_out_trig_slope(fgen::T,slp="positive") where {T<:Union{F332x1,F335x2}} = write(fgen.obj,"OUTP:TRIG:SLOP $slp")
 # Output trigger source
 set_out_trig_sour(fgen::T,sour=1) where {T<:F332x1} = write(fgen.obj,"OUTP:TRIG:SOUR ch$sour")
 # Software trigger

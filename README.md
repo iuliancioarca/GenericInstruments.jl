@@ -2,7 +2,7 @@
 Wrapper over https://github.com/BBN-Q/Instruments.jl. Bundles similar functionalities of instruments under a single generic object: power supplies, arbitrary waveform generators, etc.
 # Low level function examples
 ```
-cd(raw"C:\Iulian\Julia_Instrument_Drivers\v0.2\src")
+cd(raw"C:\Iulian\Julia_Instrument_Drivers\v0.3\GenericInstruments.jl-master\src")
 include("GenericInstruments.jl")
 using .GenericInstruments
 const GI = GenericInstruments
@@ -10,10 +10,11 @@ const GI = GenericInstruments
 - Instantiate objects
 ```
 rm   = GI.ResourceManager()
+scope1 = GI.SCOPE.INSTR(:HDO6054A, "USB0::0x05FF::0x1023::4066N51752::INSTR")
 psu1 = GI.PSU.INSTR(:KeysightE3645A, "GPIB0::5::INSTR")
 psu2 = GI.PSU.INSTR(:AgilentE3646A, "GPIB0::6::INSTR")
 fg1  = GI.FGEN.INSTR(:Keysight33500B, "USB0::0x0957::0x2C07::MY52803073::INSTR")
-GI.PSU.set_instr_state!(rm, psu1, psu2, fg1; act = GI.connect!) #this will error if no instruments availale
+GI.PSU.set_instr_state!(rm, scope1, psu1, psu2, fg1; act = GI.connect!) #this will error if no instruments availale
 ```
 - Power supply
 ```
@@ -73,4 +74,25 @@ GI.FGEN.set_outp(fg1,1,"on")
 GI.FGEN.send_soft_trig(fg1)
 # Disconnect everything
 GI.FGEN.set_instr_state!(rm, fg1; act = GI.disconnect!)
+```
+- SCOPE
+GI.SCOPE.set_instr_state!(rm, scope1; act = GI.connect!)
+# IDN
+GI.SCOPE.get_idn(scope1)
+# Default Setup
+GI.SCOPE.default_setup(scope1)
+# Vertical range
+GI.SCOPE.set_vrange(scope1,1,12)
+# Vertical scale
+GI.SCOPE.set_vscale(scope1,1,0.2)
+# Vertical offset
+GI.SCOPE.set_voffs(scope1,1,2.2)
+# Channel coupling
+GI.SCOPE.set_coupling(scope1,1,1)
+# Channel enabled
+GI.SCOPE.set_ch_state(scope1,1,0)
+# Probe attenuation
+GI.SCOPE.set_atten(scope1,1,1)
+# Disconnect everything
+GI.FGEN.set_instr_state!(rm, scope1; act = GI.disconnect!)
 ```
