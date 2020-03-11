@@ -2,7 +2,7 @@
 Wrapper over https://github.com/BBN-Q/Instruments.jl. Bundles similar functionalities of instruments under a single generic object: power supplies, arbitrary waveform generators, etc.
 # Low level function examples
 ```
-cd(raw"C:\Iulian\Julia_Instrument_Drivers\v0.3\GenericInstruments.jl-master\src")
+cd(raw"C:\Iulian\Julia_Instrument_Drivers\v0.31\GenericInstruments.jl-master\src")
 include("GenericInstruments.jl")
 using .GenericInstruments
 const GI = GenericInstruments
@@ -138,4 +138,32 @@ GI.SCOPE.set_trg_cpl(scope1,1,0)
 GI.SCOPE.set_bw_lim(scope1,1,0)
 # Disconnect
 GI.SCOPE.set_instr_state!(rm, scope1; act = GI.disconnect!)
+```
+- DMM
+```
+# Connect
+GI.DMM.set_instr_state!(rm, dmm1; act = GI.connect!)
+# Reset
+GI.DMM.reset_instr(dmm1)
+# Clear
+GI.DMM.clear_instr(dmm1)
+# IDN
+GI.DMM.get_idn(dmm1)
+# Function
+GI.DMM.set_fc(dmm1,"VOLT:DC")
+# Function and range
+GI.DMM.set_fc_range(dmm1,"VOLT",10)
+GI.DMM.set_fc_range_auto(dmm1,"VOLT")
+# Function and NPLC
+GI.DMM.set_fc_nplc(dmm1,"VOLT",2)
+# Init once
+GI.DMM.init_meas(dmm1)
+# Init continuous
+GI.DMM.init_meas_continuous(dmm1,"ON")
+# Abort
+GI.DMM.abort_meas(dmm1)
+# Read measurement
+y, unit = GI.DMM.read_meas(dmm1)
+# Disconnect
+GI.DMM.set_instr_state!(rm, dmm1; act = GI.disconnect!)
 ```

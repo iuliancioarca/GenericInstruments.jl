@@ -1,6 +1,6 @@
 # Low level function examples
 ####################################
-cd(raw"C:\Iulian\Julia_Instrument_Drivers\v0.3\GenericInstruments.jl-master\src")
+cd(raw"C:\Iulian\Julia_Instrument_Drivers\v0.31\GenericInstruments.jl-master\src")
 include("GenericInstruments.jl")
 using .GenericInstruments
 const GI = GenericInstruments
@@ -8,10 +8,11 @@ const GI = GenericInstruments
 # Instantiate obj
 rm   = GI.ResourceManager()
 scope1 = GI.SCOPE.INSTR(:HDO6054A, "USB0::0x05FF::0x1023::4066N51752::INSTR")
+dmm1 = GI.DMM.INSTR(:KE2000, "GPIB0::2::INSTR")
 psu1 = GI.PSU.INSTR(:KeysightE3645A, "GPIB0::5::INSTR")
 psu2 = GI.PSU.INSTR(:AgilentE3646A, "GPIB0::6::INSTR")
 fg1  = GI.FGEN.INSTR(:Keysight33500B, "USB0::0x0957::0x2C07::MY52803073::INSTR")
-GI.PSU.set_instr_state!(rm, scope1, psu1, psu2, fg1; act = GI.connect!) #this will error if no instruments availale
+GI.PSU.set_instr_state!(rm, scope1, dmm1, psu1, psu2, fg1; act = GI.connect!) #this will error if no instruments availale
 ####################################
 # USAGE
 ####################################
@@ -72,7 +73,7 @@ GI.FGEN.send_soft_trig(fg1)
 GI.FGEN.set_instr_state!(rm, fg1; act = GI.disconnect!)
 ####################################
 # SCOPE
-Most commands needs Dicts...
+# Most commands needs Dicts...
 GI.SCOPE.set_instr_state!(rm, scope1; act = GI.connect!)
 # IDN
 GI.SCOPE.get_idn(scope1)
@@ -132,8 +133,46 @@ GI.SCOPE.set_hoffs_t(scope1,11e-3)
 GI.SCOPE.set_trg_cpl(scope1,1,0)
 # BW limit
 GI.SCOPE.set_bw_lim(scope1,1,0)
-
 # Disconnect everything
 GI.SCOPE.set_instr_state!(rm, scope1; act = GI.disconnect!)
+
+# Digital Multimeter
+# Connect
+GI.DMM.set_instr_state!(rm, dmm1; act = GI.connect!)
+# Reset
+GI.DMM.reset_instr(dmm1)
+# Clear
+GI.DMM.clear_instr(dmm1)
+# IDN
+GI.DMM.get_idn(dmm1)
+# Function
+GI.DMM.set_fc(dmm1,"VOLT:DC")
+# Function and range
+GI.DMM.set_fc_range(dmm1,"VOLT",10)
+GI.DMM.set_fc_range_auto(dmm1,"VOLT")
+# Function and NPLC
+GI.DMM.set_fc_nplc(dmm1,"VOLT",2)
+# Init once
+GI.DMM.init_meas(dmm1)
+# Init continuous
+GI.DMM.init_meas_continuous(dmm1,"ON")
+# Abort
+GI.DMM.abort_meas(dmm1)
+# Read measurement
+y, unit = GI.DMM.read_meas(dmm1)
+# Disconnect
+GI.DMM.set_instr_state!(rm, dmm1; act = GI.disconnect!)
+
+
+
+
+
+
+
+
+
+
+
+
 
 

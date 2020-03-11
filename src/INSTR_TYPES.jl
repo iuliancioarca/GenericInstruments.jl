@@ -19,7 +19,9 @@ F335x2 = Union{INSTR{:Agilent33500B},
 	
 # DMM
 KE200x = Union{INSTR{:Keithley2000},
-	INSTR{:Keithley2001}
+	INSTR{:KE2000},
+	INSTR{:Keithley2001},
+	INSTR{:KE2001},
 	}
 	
 # SCOPE
