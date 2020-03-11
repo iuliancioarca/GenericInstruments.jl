@@ -1,5 +1,9 @@
 # GenericInstruments.jl
 Wrapper over https://github.com/BBN-Q/Instruments.jl. Bundles similar functionalities of instruments under a single generic object: power supplies, arbitrary waveform generators, etc.
+
+]add https://github.com/BBN-Q/Instruments.jl.git
+
+using Instruments
 # Low level function examples
 ```
 cd(raw"C:\Iulian\Julia_Instrument_Drivers\v0.31\GenericInstruments.jl-master\src")
