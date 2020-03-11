@@ -38,7 +38,7 @@ GI.PSU.set_outp(psu1,"output1","on")
 GI.PSU.set_outp(psu2,"output1","on")
 # Multiple instructions
 GI.PSU.set_volt_compl(psu1,"output1", 5, 0.1)
-# Disconnect everything
+# Disconnect
 GI.PSU.set_instr_state!(rm, psu1, psu2; act = GI.disconnect!)
 ```
 - Fgen
@@ -72,14 +72,16 @@ GI.FGEN.set_burst_stat(fg1,1,"on")
 GI.FGEN.set_trig_sour(fg1,1,"BUS")
 GI.FGEN.set_outp(fg1,1,"on")
 GI.FGEN.send_soft_trig(fg1)
-# Disconnect everything
+# Disconnect
 GI.FGEN.set_instr_state!(rm, fg1; act = GI.disconnect!)
 ```
-- SCOPE
+- SCOPE - Most commands needs Dicts...
 ```
 GI.SCOPE.set_instr_state!(rm, scope1; act = GI.connect!)
 # IDN
 GI.SCOPE.get_idn(scope1)
+# Fetch waveform from channel 1
+y, initial_x, x_increm = GI.SCOPE.fetch_wfm(scope1,1)
 # Default Setup
 GI.SCOPE.default_setup(scope1)
 # Vertical range
@@ -94,6 +96,46 @@ GI.SCOPE.set_coupling(scope1,1,1)
 GI.SCOPE.set_ch_state(scope1,1,0)
 # Probe attenuation
 GI.SCOPE.set_atten(scope1,1,1)
-# Disconnect everything
-GI.FGEN.set_instr_state!(rm, scope1; act = GI.disconnect!)
+# Screen Gridmode
+GI.SCOPE.set_gridmode(scope1,1)
+# Nr of averages
+GI.SCOPE.set_nr_avg(scope1,1,10)
+# EnhanceRes
+GI.SCOPE.set_eres(scope1,1,1)
+# Degauss
+GI.SCOPE.degauss(scope1,4,"CP030A")
+# Clear sweeps
+GI.SCOPE.clear_sweeps(scope1) # ??
+# Nr of acquisition points
+GI.SCOPE.set_nr_pts(scope1,1e6)
+# Sampling rate
+GI.SCOPE.set_srate(scope1,50e6)
+# Acquisition duration
+GI.SCOPE.set_hduration(scope1,1e-3)
+# Horizontal offset origin
+GI.SCOPE.set_hoffs_div(scope1,1)
+# Set Measurement
+GI.SCOPE.set_meas(scope1,1,"amplitude",1,1) 
+# Get Measurement
+GI.SCOPE.get_meas(scope1,1)
+# Set trigger source
+GI.SCOPE.set_trg_src(scope1,0)
+# Set trigger type
+GI.SCOPE.set_trg_typ(scope1,0)
+# Set trigger mode
+GI.SCOPE.set_trg_mode(scope1,0)
+# Set trigger slope
+GI.SCOPE.set_trg_slope(scope1,0)
+# Set trigger level
+GI.SCOPE.set_trg_lev(scope1,1.2)
+# Set trigger holdoff
+GI.SCOPE.set_trg_holdoff(scope1,1e-3)
+# Trigger delay time
+GI.SCOPE.set_hoffs_t(scope1,11e-3)
+# Set trigger coupling
+GI.SCOPE.set_trg_cpl(scope1,1,0)
+# BW limit
+GI.SCOPE.set_bw_lim(scope1,1,0)
+# Disconnect
+GI.SCOPE.set_instr_state!(rm, scope1; act = GI.disconnect!)
 ```
