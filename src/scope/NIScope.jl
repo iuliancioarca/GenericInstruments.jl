@@ -204,4 +204,44 @@ end
 #		scope_obj, channelList, Int32(1250010), attr_ptr)
 		
 			
+# niScope_GetAttributeViInt32
+# record length 1250008
+sym = Libdl.dlsym(lib, :niScope_GetAttributeViInt32)
+channelList = [UInt8.(collect("0")); UInt8(0)] # terminate with NULL char
+res = Int32(0)
+attr_ptr = ViPInt32(res)
+status = ccall(sym, ViStatus, 
+		(ViSession, ViConstString, ViInt32, ViPInt32), 
+		scope_obj, channelList, Int32(1250008), attr_ptr)
 
+
+# niScope_GetAttributeViReal64: NISCOPE_ATTR_HORZ_SAMPLE_RATE=1250010; % ((1000000 + 250000) + 10)
+# Not working for sample rate....
+sym = Libdl.dlsym(lib, :niScope_GetAttributeViReal64)
+channelList = [UInt8.(collect("0")); UInt8(0)] # terminate with NULL char
+res = 0.0
+attr_ptr = Ref(res)
+status = ccall(sym, ViStatus, 
+		(ViSession, ViConstString, ViInt32, Ref{Cdouble}), 
+		scope_obj, channelList, Int32(1250010), attr_ptr)
+		
+		
+# niScope_GetAttributeViReal64: NISCOPE_ATTR_HORZ_SAMPLE_RATE=1250010; % ((1000000 + 250000) + 10)
+# THIS also works for vrange
+sym = Libdl.dlsym(lib, :niScope_GetAttributeViReal64)
+channelList = [UInt8.(collect("0")); UInt8(0)] # terminate with NULL char
+res = 0.0
+attr_ptr = Ref(res)
+status = ccall(sym, ViStatus, 
+		(ViSession, ViConstString, ViInt32, Ref{Cdouble}), 
+		scope_obj, channelList, Int32(1250001), attr_ptr)
+
+
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# ViStatus niScope_SetAttributeViReal64 (ViSession vi, ViConstString channelList, ViAttr attributeID, ViReal64 value);
+# 1250001 is vrange -  THIS WORKS!!!
+sym = Libdl.dlsym(lib, :niScope_SetAttributeViReal64)
+channelList = [UInt8.(collect("0")); UInt8(0)] # terminate with NULL char
+status = ccall(sym, ViStatus, 
+		(ViSession, ViConstString, ViInt32, ViReal64), 
+		scope_obj, channelList, Int32(1250001), 10)
