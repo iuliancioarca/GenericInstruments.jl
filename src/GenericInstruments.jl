@@ -1,11 +1,11 @@
 module GenericInstruments
 using Instruments
 include("PSU.jl")
-include("FGEN.jl")
+include("AWG.jl")
 include("SCOPE.jl")
 include("DMM.jl")
 using .PSU
-using .FGEN
+using .AWG
 using .SCOPE
 using .DMM
 
