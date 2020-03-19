@@ -76,7 +76,7 @@ status = ccall(sym, ViStatus, (ViSession,) ,scope_obj)
 sym = Libdl.dlsym(lib, :niScope_InitiateAcquisition)
 status = ccall(sym, ViStatus, (ViSession,) ,scope_obj)
 
-# fetch wfm - NOT WORKING YET
+# fetch wfm
 #ViStatus niScope_Fetch (ViSession vi, ViConstString channelList, ViReal64 timeout, ViInt32 numSamples, ViReal64* wfm, struct niScope_wfmInfo* wfmInfo);
 sym = Libdl.dlsym(lib, :niScope_Fetch)
 channelList = [UInt8.(collect("0")); UInt8(0)] # terminate with NULL char
