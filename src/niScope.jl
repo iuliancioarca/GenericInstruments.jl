@@ -30,7 +30,7 @@ ViBoolean   = Int16
 ViReal64    = Float64
 ViInt32     = Int32
 
-ViPReal64    = Ref{Array{Float64,1}}
+ViPReal64   = Ref{Cdouble}
 
 ############### niSCOPE
 # INIT
@@ -84,7 +84,6 @@ timeout = 0.0
 npts = 1000
 numSamples = Int32(npts)
 
-
 struct niScope_wfmInfo
 	relativeInitialX::Float64
 	absoluteInitialX::Float64
@@ -94,21 +93,10 @@ struct niScope_wfmInfo
 	offset::Float64
 end
 
-wfmInfo = niScope_wfmInfo(0.0, 0.0, 0.0, Int32(0), 1.0, 0.0)
-PwfmInfo = Ref(wfmInfo)
+wfmInfo = [niScope_wfmInfo(0.0, 0.0, 0.0, Int32(0), 1.0, 0.0)] # this needs to be an array of structures, as per niScope documentation
+wfm = Vector{Cdouble}(undef, npts)# arg type is Ref but one needs to pass the actual array
 
-wfm = Vector{Float64}(undef, npts) # arg type is pointer but one needs to pass the actual array
-#Pwfm = Ref(wfm)
-#PwfmInfo = Ptr{niScope_wfmInfo}()
-status = ccall(sym, ViStatus, (ViSession, ViConstString, ViReal64, ViInt32, Ptr{Array{Float64,1}}, Ptr{niScope_wfmInfo}) ,scope_obj, channelList,timeout,numSamples, wfm, PwfmInfo)
-
-finalizer(deepcopy,wfm)
-finalize(wfm)
-# Julia crashes when plotting the wfm!!
-x=PwfmInfo[]
-z=deepcopy(wfm)
-using Serialization
-serialize("C:\\Iulian\\wfm.a",z)
+status = ccall(sym, ViStatus, (ViSession, ViConstString, ViReal64, ViInt32, Ref{Cdouble}, Ptr{niScope_wfmInfo}) ,scope_obj, channelList,timeout,numSamples, wfm, wfmInfo)
 
 
 # niScope_ReadMeasurement (ViSession vi, ViConstString channelList, ViReal64 timeout, ViInt32 scalarMeasFunction, ViReal64* result); 
