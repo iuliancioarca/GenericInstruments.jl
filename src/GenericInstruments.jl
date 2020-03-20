@@ -11,4 +11,11 @@ include("awg\\AWG.jl")
 include("scope\\SCOPE.jl")
 include("dmm\\DMM.jl")
 
+using .PSU
+using .AWG
+using .SCOPE
+using .DMM
+
 end #endmodule
+
+GI = GenericInstruments

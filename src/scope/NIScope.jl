@@ -35,7 +35,7 @@ struct niScope_wfmInfo
 end
 
 ############### niSCOPE
-# 
+#
 """
 scope = niScope_init(scope::T) where {T<:NISCOPE}
 scope is a mutable struct of type:
@@ -67,24 +67,24 @@ end
 
 # Configure vertical
 """
-niScope_ConfigureVertical(scope::T,ch=0,Vrange = 5.0,Voffset=0.5,coupling = Int32(0),probeAttenuation=10.0,enabled=Int16(1)) where {T<:NISCOPE}
+niScope_ConfigureVertical(scope::T;ch=0,vrang=5.0,voffs=0.5,cpl=Int32(0),att=10.0,st=Int16(1)) where {T<:NISCOPE}
 """
-function niScope_ConfigureVertical(scope::T,ch=0,Vrange = 5.0,Voffset=0.5,
-	coupling = Int32(0),probeAttenuation=10.0,enabled=Int16(1)) where {T<:NISCOPE}
-# niScope_ConfigureVertical (ViSession vi, ViConstString channelList, ViReal64 range, ViReal64 offset, ViInt32 coupling, ViReal64 probeAttenuation, ViBoolean enabled);
+function niScope_ConfigureVertical(scope::T;ch=0,vrang=5.0,voffs=0.5,
+	cpl=Int32(0),att=10.0,st=Int16(1)) where {T<:NISCOPE}
+# niScope_ConfigureVertical (ViSession vi, ViConstString channelList, ViReal64 range, ViReal64 offset, ViInt32 cpl, ViReal64 att, ViBoolean st);
 	sym = Libdl.dlsym(lib, :niScope_ConfigureVertical )
 	channelList = [UInt8.(collect("0")); UInt8(0)] # terminate with NULL char
 	status = ccall(sym, ViStatus, (ViSession,ViConstString, ViReal64, ViReal64, ViInt32, ViReal64, ViBoolean),
-			scope.obj, channelList, Vrange, Voffset, coupling, probeAttenuation, enabled)
+			scope.obj, channelList, vrang, voffs, cpl, att, st)
 end
 
 # Configure horizontal
 """
-status = niScope_ConfigureHorizontalTiming(scope::T,minSampleRate=2e5,minNumPts=1000,refPosition=0.1,numRecords=1,enforceRealtime=Int16(1)) where {T<:NISCOPE}
+status = niScope_ConfigureHorizontalTiming(scope::T;minSampleRate=2e5,minNumPts=1000,refPosition=0.1,numRecords=1,enforceRealtime=Int16(1)) where {T<:NISCOPE}
 """
-function niScope_ConfigureHorizontalTiming(scope::T,minSampleRate=2e5,
+function niScope_ConfigureHorizontalTiming(scope::T;minSampleRate=2e5,
 	minNumPts=1000,refPosition=0.1,numRecords=1,enforceRealtime=Int16(1)) where {T<:NISCOPE}
-# niScope_ConfigureHorizontalTiming 
+# niScope_ConfigureHorizontalTiming
 	sym = Libdl.dlsym(lib, :niScope_ConfigureHorizontalTiming )
 	status = ccall(sym, ViStatus, (ViSession, ViReal64, ViInt32, ViReal64, ViInt32, ViBoolean),
 			scope.obj, minSampleRate, minNumPts, refPosition, numRecords, enforceRealtime)
@@ -121,11 +121,11 @@ function niScope_ActualRecordLength(scope::T) where {T<:NISCOPE}
 	return attr_ptr[]
 end
 
-# Fetch wfm 
+# Fetch wfm
 """
-y, wfmInfo[1] = fetch_wfm(scope::T,ch=0) where {T<:NISCOPE}
+y, wfmInfo[1] = fetch_wfm(scope::T;ch=0) where {T<:NISCOPE}
 """
-function fetch_wfm(scope::T,ch=0) where {T<:NISCOPE}
+function fetch_wfm(scope::T;ch=0) where {T<:NISCOPE}
 #ViStatus niScope_Fetch (ViSession vi, ViConstString channelList, ViReal64 timeout, ViInt32 numSamples, ViReal64* wfm, struct niScope_wfmInfo* wfmInfo);
 	sym = Libdl.dlsym(lib, :niScope_Fetch)
 	channelList = [UInt8.(collect("$ch")); UInt8(0)] # terminate with NULL char
@@ -133,8 +133,8 @@ function fetch_wfm(scope::T,ch=0) where {T<:NISCOPE}
 	numSamples = niScope_ActualRecordLength(scope)
 	wfmInfo = [niScope_wfmInfo(0.0, 0.0, 0.0, Int32(0), 1.0, 0.0)] # this needs to be an array of structures, as per niScope documentation
 	y = Vector{Cdouble}(undef, numSamples)# arg type is Ref but one needs to pass the actual array
-	status = ccall(sym, ViStatus, 
-			(ViSession, ViConstString, ViReal64, ViInt32, Ref{Cdouble}, Ptr{niScope_wfmInfo}), 
+	status = ccall(sym, ViStatus,
+			(ViSession, ViConstString, ViReal64, ViInt32, Ref{Cdouble}, Ptr{niScope_wfmInfo}),
 			scope.obj, channelList, timeout, numSamples, y, wfmInfo)
 	return y, wfmInfo[1]
 end
@@ -163,9 +163,10 @@ meas = niScope_ReadMeasurement(scope::T,ch=0,fct=7) where {T<:NISCOPE}
 #IviScopeMeasurementVoltageCycleAverage(17)
 #IviScopeMeasurementOverShoot(18)
 #IviScopeMeasurementPreshoot(19)
+
 """
-function niScope_ReadMeasurement(scope::T,ch=0,fct=7) where {T<:NISCOPE}
-# niScope_ReadMeasurement (ViSession vi, ViConstString channelList, ViReal64 timeout, ViInt32 scalarMeasFunction, ViReal64* result); 
+function niScope_ReadMeasurement(scope::T;ch=0,fct=7) where {T<:NISCOPE}
+# niScope_ReadMeasurement (ViSession vi, ViConstString channelList, ViReal64 timeout, ViInt32 scalarMeasFunction, ViReal64* result);
 	sym = Libdl.dlsym(lib, :niScope_ReadMeasurement)
 	channelList = [UInt8.(collect("0")); UInt8(0)] # terminate with NULL char
 	timeout = 0.0
@@ -184,64 +185,64 @@ function niScope_close(scope::T) where {T<:NISCOPE}
 	status = ccall(sym, ViStatus, (ViSession,) ,scope.obj)
 	return status
 end
-	
+
 # niScope_GetAttributeViInt32
 #sym = Libdl.dlsym(lib, :niScope_GetAttributeViInt32)
 #channelList = [UInt8.(collect("0")); UInt8(0)] # terminate with NULL char
 #res = Int32(0)
 #attr_ptr = ViPInt32(res)
-#status = ccall(sym, ViStatus, 
-#		(ViSession, ViConstString, ViInt32, ViPInt32), 
+#status = ccall(sym, ViStatus,
+#		(ViSession, ViConstString, ViInt32, ViPInt32),
 #		scope_obj, channelList, Int32(1250010), attr_ptr)
-		
+
 # niScope_GetAttributeViReal64
 #sym = Libdl.dlsym(lib, :niScope_GetAttributeViReal64)
 #channelList = [UInt8.(collect("0")); UInt8(0)] # terminate with NULL char
 #res = 0.0
 #attr_ptr = ViReal64(res)
-#status = ccall(sym, ViStatus, 
-#		(ViSession, ViConstString, ViInt32, ViReal64), 
+#status = ccall(sym, ViStatus,
+#		(ViSession, ViConstString, ViInt32, ViReal64),
 #		scope_obj, channelList, Int32(1250010), attr_ptr)
-		
-			
-# niScope_GetAttributeViInt32
-# record length 1250008
-sym = Libdl.dlsym(lib, :niScope_GetAttributeViInt32)
-channelList = [UInt8.(collect("0")); UInt8(0)] # terminate with NULL char
-res = Int32(0)
-attr_ptr = ViPInt32(res)
-status = ccall(sym, ViStatus, 
-		(ViSession, ViConstString, ViInt32, ViPInt32), 
-		scope_obj, channelList, Int32(1250008), attr_ptr)
 
-
-# niScope_GetAttributeViReal64: NISCOPE_ATTR_HORZ_SAMPLE_RATE=1250010; % ((1000000 + 250000) + 10)
-# Not working for sample rate....
-sym = Libdl.dlsym(lib, :niScope_GetAttributeViReal64)
-channelList = [UInt8.(collect("0")); UInt8(0)] # terminate with NULL char
-res = 0.0
-attr_ptr = Ref(res)
-status = ccall(sym, ViStatus, 
-		(ViSession, ViConstString, ViInt32, Ref{Cdouble}), 
-		scope_obj, channelList, Int32(1250010), attr_ptr)
-		
-		
-# niScope_GetAttributeViReal64: NISCOPE_ATTR_HORZ_SAMPLE_RATE=1250010; % ((1000000 + 250000) + 10)
-# THIS also works for vrange
-sym = Libdl.dlsym(lib, :niScope_GetAttributeViReal64)
-channelList = [UInt8.(collect("0")); UInt8(0)] # terminate with NULL char
-res = 0.0
-attr_ptr = Ref(res)
-status = ccall(sym, ViStatus, 
-		(ViSession, ViConstString, ViInt32, Ref{Cdouble}), 
-		scope_obj, channelList, Int32(1250001), attr_ptr)
-
-
-#!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-# ViStatus niScope_SetAttributeViReal64 (ViSession vi, ViConstString channelList, ViAttr attributeID, ViReal64 value);
-# 1250001 is vrange -  THIS WORKS!!!
-sym = Libdl.dlsym(lib, :niScope_SetAttributeViReal64)
-channelList = [UInt8.(collect("0")); UInt8(0)] # terminate with NULL char
-status = ccall(sym, ViStatus, 
-		(ViSession, ViConstString, ViInt32, ViReal64), 
-		scope_obj, channelList, Int32(1250001), 10)
+#
+# # niScope_GetAttributeViInt32
+# # record length 1250008
+# sym = Libdl.dlsym(lib, :niScope_GetAttributeViInt32)
+# channelList = [UInt8.(collect("0")); UInt8(0)] # terminate with NULL char
+# res = Int32(0)
+# attr_ptr = ViPInt32(res)
+# status = ccall(sym, ViStatus,
+# 		(ViSession, ViConstString, ViInt32, ViPInt32),
+# 		scope_obj, channelList, Int32(1250008), attr_ptr)
+#
+#
+# # niScope_GetAttributeViReal64: NISCOPE_ATTR_HORZ_SAMPLE_RATE=1250010; % ((1000000 + 250000) + 10)
+# # Not working for sample rate....
+# sym = Libdl.dlsym(lib, :niScope_GetAttributeViReal64)
+# channelList = [UInt8.(collect("0")); UInt8(0)] # terminate with NULL char
+# res = 0.0
+# attr_ptr = Ref(res)
+# status = ccall(sym, ViStatus,
+# 		(ViSession, ViConstString, ViInt32, Ref{Cdouble}),
+# 		scope_obj, channelList, Int32(1250010), attr_ptr)
+#
+#
+# # niScope_GetAttributeViReal64: NISCOPE_ATTR_HORZ_SAMPLE_RATE=1250010; % ((1000000 + 250000) + 10)
+# # THIS also works for vrang
+# sym = Libdl.dlsym(lib, :niScope_GetAttributeViReal64)
+# channelList = [UInt8.(collect("0")); UInt8(0)] # terminate with NULL char
+# res = 0.0
+# attr_ptr = Ref(res)
+# status = ccall(sym, ViStatus,
+# 		(ViSession, ViConstString, ViInt32, Ref{Cdouble}),
+# 		scope_obj, channelList, Int32(1250001), attr_ptr)
+#
+#
+# #!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# # ViStatus niScope_SetAttributeViReal64 (ViSession vi, ViConstString channelList, ViAttr attributeID, ViReal64 value);
+# # 1250001 is vrang -  THIS WORKS!!!
+# sym = Libdl.dlsym(lib, :niScope_SetAttributeViReal64)
+# channelList = [UInt8.(collect("0")); UInt8(0)] # terminate with NULL char
+# status = ccall(sym, ViStatus,
+# 		(ViSession, ViConstString, ViInt32, ViReal64),
+# 		scope_obj, channelList, Int32(1250001), 10)

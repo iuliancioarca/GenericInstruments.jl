@@ -4,21 +4,21 @@ set_duty(fgen::INSTR{:Agilent33250A},ch=1,func="square",duty=0.01) = write(fgen.
 
 ## BURST
 # Burst on
-set_burst_stat(fgen::T,ch=1,st="off") where {T<:F332x1} = write(fgen.obj,"BURS:STAT $st")
+set_burst_stat(fgen::T;ch=1,st="off") where {T<:F332x1} = write(fgen.obj,"BURS:STAT $st")
 # Burst mode
-set_burst_mode(fgen::T,ch=1,md="triggered") where {T<:F332x1} = write(fgen.obj,"BURS:MODE $md")
+set_burst_mode(fgen::T;ch=1,md="triggered") where {T<:F332x1} = write(fgen.obj,"BURS:MODE $md")
 # Burst polarity
-set_burst_pol(fgen::T,ch=1,pol="normal") where {T<:F332x1} = write(fgen.obj,"BURS:GATE:POL $pol")
+set_burst_pol(fgen::T;ch=1,pol="normal") where {T<:F332x1} = write(fgen.obj,"BURS:GATE:POL $pol")
 # Burst ncycles
-set_burst_ncyc(fgen::T,ch=1,nc=1) where {T<:F332x1} = write(fgen.obj,"BURS:NCYC $nc")
+set_burst_ncyc(fgen::T;ch=1,nc=1) where {T<:F332x1} = write(fgen.obj,"BURS:NCYC $nc")
 # Burst period
-set_burst_per(fgen::T,ch=1,per=0.01) where {T<:F332x1} = write(fgen.obj,"BURS:INT:PER $per")
+set_burst_per(fgen::T;ch=1,per=0.01) where {T<:F332x1} = write(fgen.obj,"BURS:INT:PER $per")
 # Burst phase
-set_burst_phase(fgen::T,ch=1,unit="deg",phase=0) where {T<:F332x1} = write(fgen.obj,"UNIT:ANGL $unit\n;BURS:PHAS $phase")
+set_burst_phase(fgen::T;ch=1,unit="deg",phase=0) where {T<:F332x1} = write(fgen.obj,"UNIT:ANGL $unit\n;BURS:PHAS $phase")
 
 ## TRIGGER
 # Output trigger source
-set_out_trig_sour(fgen::T,sour=1) where {T<:F332x1} = write(fgen.obj,"OUTP:TRIG:SOUR ch$sour")
+set_out_trig_sour(fgen::T;sour=1) where {T<:F332x1} = write(fgen.obj,"OUTP:TRIG:SOUR ch$sour")
 
 
 

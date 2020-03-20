@@ -1,160 +1,162 @@
 # Low level function examples
 ####################################
-cd(raw"C:\Iulian\GenericInstruments.jl-master\src")
+cd(raw"C:\Iulian\GenericInstruments.jl-niScope_rearrange\src")
 include("GenericInstruments.jl")
 using .GenericInstruments
 const GI = GenericInstruments
 ####################################
 # Instantiate obj
-rm   = GI.ResourceManager()
-scope1 = GI.INSTR(:HDO6054A, "USB0::0x05FF::0x1023::4066N51752::INSTR")
-niScope1 = GI.INSTR(:NI5122,"PXI1Slot3")
-dmm1 = GI.INSTR(:KE2000, "GPIB0::2::INSTR")
-psu1 = GI.INSTR(:KeysightE3645A, "GPIB0::5::INSTR")
-psu2 = GI.INSTR(:AgilentE3646A, "GPIB0::6::INSTR")
-fg1  = GI.INSTR(:Keysight33500B, "USB0::0x0957::0x2C07::MY52803073::INSTR")
-GI.set_instr_state!(rm, scope1, dmm1, psu1, psu2, fg1; act = GI.connect!) #this will error if no instruments availale
+resmgr   = GI.ResourceManager()
+scope1   = GI.SCOPE.INSTR(:HDO6054A, "USB0::0x05FF::0x1023::4066N51752::INSTR")
+niScope1 = GI.SCOPE.INSTR(:NI5122,"PXI1Slot3")
+dmm1 = GI.DMM.INSTR(:KE2000, "GPIB0::2::INSTR")
+psu1 = GI.PSU.INSTR(:KeysightE3645A, "GPIB0::5::INSTR")
+psu2 = GI.PSU.INSTR(:AgilentE3646A, "GPIB0::6::INSTR")
+awg1 = GI.AWG.INSTR(:Keysight33500B, "USB0::0x0957::0x2C07::MY52803073::INSTR")
+GI.SCOPE.set_instr_state!(resmgr, scope1, niScope1,dmm1, psu1, psu2, awg1; act = GI.connect!) #this will error if no instruments availale
 ####################################
 # USAGE
 ####################################
 # Power supply
 # IDN
-GI.get_idn(psu1)
-GI.get_idn(psu2)
+GI.PSU.get_idn(psu1)
+GI.PSU.get_idn(psu2)
 # Reset
-GI.reset_instr(psu1)
-GI.reset_instr(psu2)
+GI.PSU.reset_instr(psu1)
+GI.PSU.reset_instr(psu2)
 # Set range
-GI.set_range(psu1,"output1","low")
-GI.set_range(psu2,"output1","high")
+GI.PSU.set_range(psu1,ch=1,vrang="low")
+GI.PSU.set_range(psu2,ch=1,vrang="high")
 # Set voltage
-GI.set_volt(psu1,"output1",5)
-GI.set_volt(psu2,"output1",3)
+GI.PSU.set_volt(psu1,ch=1,volt=5)
+GI.PSU.set_volt(psu2,ch=1,volt=3)
 # Set current compliance
-GI.set_compl(psu1,"output1",0.6)
-GI.set_compl(psu2,"output1",1.1)
+GI.PSU.set_compl(psu1,ch=1,crtlim=0.6)
+GI.PSU.set_compl(psu2,ch=1,crtlim=1.1)
 # Output on/off
-GI.set_outp(psu1,"output1","on")
-GI.set_outp(psu2,"output1","on")
+GI.PSU.set_outp(psu1,ch=1,st="on")
+GI.PSU.set_outp(psu2,ch=1,st="on")
 # Multiple instructions
-GI.set_volt_compl(psu1,"output1", 5, 0.1)
+#GI.PSU.set_volt_compl(psu1,ch=1, 5, 0.1)
 # Disconnect everything
-GI.set_instr_state!(rm, psu1, psu2; act = GI.disconnect!)
+GI.PSU.set_instr_state!(resmgr, psu1, psu2; act = GI.disconnect!)
 ####################################
-# Fgen
+# AWG
 # IDN
-GI.get_idn(fg1)
+GI.AWG.get_idn(awg1)
 # Reset
-GI.reset_instr(fg1)
+GI.AWG.reset_instr(awg1)
 # Output load INF
-GI.set_load(fg1,1,"INF")
+GI.AWG.set_load(awg1,ch=1,load="INF")
 # Wfm
-GI.set_wfm(fg1,1,"square")
+GI.AWG.set_wfm(awg1,ch=1,func="square")
 # Amplitude
-GI.set_amplit(fg1,1,"vpp",1)
+GI.AWG.set_amplit(awg1,ch=1,unit="vpp",volt=1)
 # Offset
-GI.set_offs(fg1,1,0.4)
+GI.AWG.set_offs(awg1,ch=1,volt=0.4)
 # High level
-GI.set_hilev(fg1,1,3)
+GI.AWG.set_hilev(awg1,ch=1,volt=3)
 # Low level
-GI.set_lolev(fg1,1,1)
+GI.AWG.set_lolev(awg1,ch=1,volt=1)
 # Duty cycle
-GI.set_duty(fg1,1,"square",22)
+GI.AWG.set_duty(awg1,ch=1,func="square",duty=22)
 # Arbitrary waveform
-GI.clear_arbs(fg1,1)
+GI.AWG.clear_arbs(awg1,ch=1)
 wfm = Float32.([0,0, 0,1, 1,1,1,-1,-1,-1,-1,-1,1,1,1, 0, 0,0,0,0]) # normed to -1:1
-GI.send_arb(fg1,1,wfm,1e-7,"mywfm")
-GI.set_wfm(fg1,1,"ARB")
-GI.set_arb_wfm(fg1,1,"mywfm")
-GI.set_burst_stat(fg1,1,"on")
-GI.set_trig_sour(fg1,1,"BUS")
-GI.set_outp(fg1,1,"on")
-GI.send_soft_trig(fg1)
+GI.AWG.send_arb(awg1,ch=1,wfm=wfm,dt=1e-7,arb="mywfm")
+GI.AWG.set_wfm(awg1,ch=1,func="ARB")
+GI.AWG.set_arb_wfm(awg1,ch=1,arb="mywfm")
+GI.AWG.set_burst_stat(awg1,ch=1,st="on")
+GI.AWG.set_trig_sour(awg1,ch=1,sour="BUS")
+GI.AWG.set_outp(awg1,ch=1,st="on")
+GI.AWG.send_soft_trig(awg1)
 # Disconnect everything
-GI.set_instr_state!(rm, fg1; act = GI.disconnect!)
+GI.AWG.set_instr_state!(resmgr, awg1; act = GI.disconnect!)
 ####################################
 # SCOPE
 # Most commands needs Dicts...
-GI.set_instr_state!(rm, scope1; act = GI.connect!)
+GI.SCOPE.set_instr_state!(resmgr, scope1; act = GI.connect!)
 # IDN
-GI.get_idn(scope1)
+GI.SCOPE.get_idn(scope1)
 # Fetch waveform from channel 1
-y, initial_x, x_increm = GI.fetch_wfm(scope1,1)
+y, initial_x, x_increm = GI.SCOPE.fetch_wfm(scope1,ch=1)
 # Default Setup
-GI.default_setup(scope1)
+GI.SCOPE.default_setup(scope1)
 # Vertical range
-GI.set_vrange(scope1,1,12)
+GI.SCOPE.set_vrange(scope1,ch=1,vrang=12)
 # Vertical scale
-GI.set_vscale(scope1,1,0.2)
+GI.SCOPE.set_vscale(scope1,ch=1,volt=0.2)
 # Vertical offset
-GI.set_voffs(scope1,1,2.2)
+GI.SCOPE.set_voffs(scope1,ch=1,voffs=2.2)
 # Channel coupling
-GI.set_coupling(scope1,1,2)
+GI.SCOPE.set_coupling(scope1,ch=1,cpl=2)
 # Channel enabled
-GI.set_ch_state(scope1,1,0)
+GI.SCOPE.set_ch_state(scope1,ch=1,st=0)
 # Probe attenuation
-GI.set_atten(scope1,1,1)
+GI.SCOPE.set_atten(scope1,ch=1,att=1)
 # Screen Gridmode
-GI.set_gridmode(scope1,1)
+GI.SCOPE.set_gridmode(scope1,gridmode=1)
 # Nr of averages
-GI.set_nr_avg(scope1,1,10)
+GI.SCOPE.set_nr_avg(scope1,ch=1,navg=10)
 # EnhanceRes
-GI.set_eres(scope1,1,1)
+GI.SCOPE.set_eres(scope1,ch=1,bits=1)
 # Degauss
-GI.degauss(scope1,4,"CP030A")
+GI.SCOPE.degauss(scope1,ch=4,probe="CP030A")
 # Clear sweeps
-GI.clear_sweeps(scope1) # ??
+GI.SCOPE.clear_sweeps(scope1) # ??
 # Nr of acquisition points
-GI.set_nr_pts(scope1,1e6)
+GI.SCOPE.set_nr_pts(scope1,npts=1e6)
 # Sampling rate
-GI.set_srate(scope1,50e6)
+GI.SCOPE.set_srate(scope1,sr=50e6)
 # Acquisition duration
-GI.set_hduration(scope1,1e-3)
+GI.SCOPE.set_hduration(scope1,d=1e-3)
 # Horizontal offset origin
-GI.set_hoffs_div(scope1,1)
+GI.SCOPE.set_hoffs_div(scope1,href=1)
 # Set Measurement
-GI.set_meas(scope1,1,0,1,1) 
+GI.SCOPE.set_meas(scope1,ch=1,fct=0,par=1,vw=1) 
 # Get Measurement
-GI.get_meas(scope1,1)
+GI.SCOPE.get_meas(scope1,par=1)
 # Set trigger source
-GI.set_trg_src(scope1,0)
+GI.SCOPE.set_trg_src(scope1,ch=0)
 # Set trigger type
-GI.set_trg_typ(scope1,0)
+GI.SCOPE.set_trg_typ(scope1,tp=0)
 # Set trigger mode
-GI.set_trg_mode(scope1,0)
+GI.SCOPE.set_trg_mode(scope1,mode=0)
 # Set trigger slope
-GI.set_trg_slope(scope1,0)
+GI.SCOPE.set_trg_slope(scope1,slp=0)
 # Set trigger level
-GI.set_trg_lev(scope1,1.2)
+GI.SCOPE.set_trg_lev(scope1,lev=1.2)
 # Set trigger holdoff
-GI.set_trg_holdoff(scope1,1e-3)
+GI.SCOPE.set_trg_holdoff(scope1,hf=1e-3)
 # Trigger delay time
-GI.set_hoffs_t(scope1,11e-3)
+GI.SCOPE.set_hoffs_t(scope1,href=11e-3)
 # Set trigger coupling
-GI.set_trg_cpl(scope1,1,0)
+GI.SCOPE.set_trg_cpl(scope1,ch=1,cpl=0)
 # BW limit
-GI.set_bw_lim(scope1,1,0)
+GI.SCOPE.set_bw_lim(scope1,ch=1,bw=0)
 # Disconnect everything
-GI.set_instr_state!(rm, scope1; act = GI.disconnect!)
+GI.SCOPE.set_instr_state!(resmgr, scope1; act = GI.disconnect!)
 
 # niScope
 # Connect
-GI.set_instr_state!(rm, niScope1; act = GI.connect!)
-GI.niScope_AutoSetup(niScope1)
-GI.niScope_ConfigureVertical(niScope1,0,5.0,0.5,Int32(1),1.0,Int16(1))
-GI.niScope_ConfigureHorizontalTiming(niScope1,2e5,1000,0.1,1,1)
-GI.niScope_ConfigureTriggerImmediate(niScope1)
-GI.niScope_InitiateAcquisition(niScope1)
-GI.niScope_ActualRecordLength(niScope1)
-y,info = GI.fetch_wfm(niScope1,0)
+GI.SCOPE.set_instr_state!(resmgr, niScope1; act = GI.connect!)
+GI.SCOPE.niScope_AutoSetup(niScope1)
+GI.SCOPE.niScope_ConfigureVertical(niScope1,
+	ch=0,vrang=5.0,voffs=0.5,cpl=Int32(1),att=1.0,st=Int16(1))
+GI.SCOPE.niScope_ConfigureHorizontalTiming(niScope1,
+minSampleRate=2e5,minNumPts=1000,refPosition=0.1,numRecords=1,enforceRealtime=1)
+GI.SCOPE.niScope_ConfigureTriggerImmediate(niScope1)
+GI.SCOPE.niScope_InitiateAcquisition(niScope1)
+GI.SCOPE.niScope_ActualRecordLength(niScope1)
+y,info = GI.SCOPE.fetch_wfm(niScope1,ch=0)
 plot(y)
 # Disconnect everything
-GI.set_instr_state!(rm, niScope1; act = GI.disconnect!)
+GI.SCOPE.set_instr_state!(resmgr, niScope1; act = GI.disconnect!)
 
 
 # Digital Multimeter
 # Connect
-GI.set_instr_state!(rm, dmm1; act = GI.connect!)
+GI.set_instr_state!(resmgr, dmm1; act = GI.connect!)
 # Reset
 GI.reset_instr(dmm1)
 # Clear
@@ -162,22 +164,22 @@ GI.clear_instr(dmm1)
 # IDN
 GI.get_idn(dmm1)
 # Function
-GI.set_fc(dmm1,"VOLT:DC")
+GI.set_fc(dmm1,fc="VOLT:DC")
 # Function and range
-GI.set_fc_range(dmm1,"VOLT",10)
-GI.set_fc_range_auto(dmm1,"VOLT")
+GI.set_fc_range(dmm1,fc="VOLT",rn=10)
+GI.set_fc_range_auto(dmm1,fc="VOLT")
 # Function and NPLC
-GI.set_fc_nplc(dmm1,"VOLT",2)
+GI.set_fc_nplc(dmm1,fc="VOLT",nplc=2)
 # Init once
 GI.init_meas(dmm1)
 # Init continuous
-GI.init_meas_continuous(dmm1,"ON")
+GI.init_meas_continuous(dmm1,st="ON")
 # Abort
 GI.abort_meas(dmm1)
 # Read measurement
 y, unit = GI.read_meas(dmm1)
 # Disconnect
-GI.set_instr_state!(rm, dmm1; act = GI.disconnect!)
+GI.set_instr_state!(resmgr, dmm1; act = GI.disconnect!)
 
 
 
