@@ -1,29 +1,9 @@
-using Libdl
-# niScope_64.dll location:
-NI_libname = "C:\\Program Files\\IVI Foundation\\IVI\\Bin\\niScope_64"
 lib = Libdl.dlopen(NI_libname) # Open the library explicitly.
 #Libdl.dlclose(lib) # close dll
 #sym = Libdl.dlsym(lib, :niScope_init)
 #ccall(sym, ...) # Use the pointer `sym` instead of the (symbol, library) tuple
 # ccall basic:
 # ccall(:func, "dllname", return_type,(input types) ,input arguments)
-
-## Required Vi types:
-ViStatus    = Int32
-ViSession   = UInt32 # like resource manager rm (de-refferenced pointer)
-ViPSession  = Ref{UInt32}
-ViString    = Ptr{UInt8}
-ViRsrc      = ViString
-ViConstString = ViString
-ViPFindList = Ref{UInt32}
-ViPUInt32   = Ref{UInt32}
-ViPByte     = Ref{UInt8}
-ViBoolean   = Int16
-ViReal64    = Float64
-ViInt32     = Int32
-ViPInt32    = Ref{Int32}
-
-ViPReal64    = Ref{Array{Float64,1}}
 
 struct niScope_wfmInfo
 	relativeInitialX::Float64

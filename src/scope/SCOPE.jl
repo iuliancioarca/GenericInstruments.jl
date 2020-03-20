@@ -1,4 +1,6 @@
 module SCOPE
+using Libdl # for NI dlls
+include("..\\constants.jl")
 include("..\\INSTR_TYPES.jl")
 #
 include("SCOPE_common.jl")
