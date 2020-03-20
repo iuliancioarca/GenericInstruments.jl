@@ -17,5 +17,3 @@ using .SCOPE
 using .DMM
 
 end #endmodule
-
-GI = GenericInstruments
