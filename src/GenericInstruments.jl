@@ -3,8 +3,8 @@ using Instruments
 import Instruments: ResourceManager, GenericInstrument, connect!, disconnect!, write, read, query
 
 # common instr containers, connect/disconnect methods
-include("comm_utils.jl")
 include("INSTR_TYPES.jl")
+include("comm_utils.jl")
 # instruments
 include("psu\\PSU.jl")
 include("awg\\AWG.jl")

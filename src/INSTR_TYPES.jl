@@ -3,9 +3,10 @@ mutable struct INSTR{instr_name}
     name::Symbol
     address::String
     obj#::GenericInstrument; this needs to be anything, to accept PXI instruments
+	initialized::Bool
 end
 # Generic instrument constructor
-INSTR(instr_name, address) = INSTR{instr_name}(instr_name, address, GenericInstrument())
+INSTR(instr_name, address) = INSTR{instr_name}(instr_name, address, GenericInstrument(),false)
 
 # PSU
 E364x1 = Union{INSTR{:KeysightE3645A},

@@ -11,12 +11,20 @@ ViConstString = ViString
 ViPFindList = Ref{UInt32}
 ViPUInt32   = Ref{UInt32}
 ViPByte     = Ref{UInt8}
-ViBoolean   = Int16
-ViReal64    = Float64
+
+
 ViInt32     = Int32
 ViPInt32    = Ref{Int32}
+ViInt64     = Int64
+ViPInt64    = Ref{Int64}
 
-ViPReal64    = Ref{Array{Float64,1}}
+ViReal64    = Float64
+ViPReal64   = Ref{Float64}
+
+ViBoolean   = Int16
+
+
+#ViPReal64    = Ref{Array{Float64,1}}
 
 
 
