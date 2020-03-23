@@ -7,8 +7,8 @@ const GI = GenericInstruments
 ####################################
 # Instantiate obj
 resmgr   = GI.ResourceManager()
-scope1   = GI.SCOPE.INSTR(:HDO6054A, "USB0::0x05FF::0x1023::4066N51752::INSTR")
 niScope1 = GI.SCOPE.INSTR(:NI5122,"PXI1Slot3")
+scope1   = GI.SCOPE.INSTR(:HDO6054A, "USB0::0x05FF::0x1023::4066N51752::INSTR")
 dmm1 = GI.DMM.INSTR(:KE2000, "GPIB0::2::INSTR")
 psu1 = GI.PSU.INSTR(:KeysightE3645A, "GPIB0::5::INSTR")
 psu2 = GI.PSU.INSTR(:AgilentE3646A, "GPIB0::6::INSTR")
@@ -139,8 +139,18 @@ GI.SCOPE.set_instr_state!(resmgr, scope1; act = GI.disconnect!)
 
 # niScope
 # Connect
-GI.SCOPE.set_instr_state!(resmgr, niScope1; act = GI.connect!)
+#GI.SCOPE.set_instr_state!(resmgr, niScope1; act = GI.SCOPE.connect!) # not wotking yet
+GI.SCOPE.niScope_init(niScope1)
 GI.SCOPE.niScope_AutoSetup(niScope1)
+# user defined low_level
+GI.SCOPE.set_coupling(niScope1;ch="1",cpl=1)
+GI.SCOPE.niScope_GetAttributeViInt64(niScope1, "1", 1250003) # check coupling :( crash
+
+#vrange
+GI.SCOPE.set_vrange(niScope1;ch="1",vrang=0.35)
+GI.SCOPE.niScope_GetAttributeViReal64(niScope1, "1", 1250001) # check vrange: OK, it approximates to next value
+
+
 GI.SCOPE.niScope_ConfigureVertical(niScope1,
 	ch=0,vrang=5.0,voffs=0.5,cpl=Int32(1),att=1.0,st=Int16(1))
 GI.SCOPE.niScope_ConfigureHorizontalTiming(niScope1,
