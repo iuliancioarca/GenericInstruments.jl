@@ -1,21 +1,22 @@
-using Instruments
-import Instruments: ResourceManager, GenericInstrument, connect!, disconnect!, write, read, query
-
-mutable struct INSTR{instr_name}
-    name::Symbol
-    address::String
-    obj::GenericInstrument
+# Connect for Visa instruments
+function connect!(resmgr, instr::INSTR)
+	connect!(resmgr, instr.obj, instr.address)
+	instr.initialized = true
 end
-# Generic instrument constructor
-INSTR(instr_name, address) = INSTR{instr_name}(instr_name, address, GenericInstrument())
 
-connect!(rm, instr)    = connect!(rm, instr.obj, instr.address)
-disconnect!(instr)     = disconnect!(instr.obj)
-disconnect!(rm, instr) = disconnect!(instr.obj)
+function disconnect!(instr::INSTR)
+	disconnect!(instr.obj)
+	instr.initialized = false
+end
+disconnect!(resmgr, instr) = disconnect!(instr)
 
-function set_instr_state!(rm, x...; act = disconnect!)
+# Connect for NI PXI
+#connect!(resmgr, instr)    = niScope_init(instr) #resmgr is dummy
+#disconnect!(resmgr, instr) = niScope_close(instr) #resmgr is dummy
+
+function set_instr_state!(resmgr, x...; act = disconnect!)
     for instr in x
-        act(rm, instr)
+        act(resmgr, instr)
     end
 end
 

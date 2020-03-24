@@ -1,4 +1,13 @@
 # Instrument types
+mutable struct INSTR{instr_name}
+    name::Symbol
+    address::String
+    obj#::GenericInstrument; this needs to be anything, to accept PXI instruments
+	initialized::Bool
+end
+# Generic instrument constructor
+INSTR(instr_name, address) = INSTR{instr_name}(instr_name, address, GenericInstrument(),false)
+
 # PSU
 E364x1 = Union{INSTR{:KeysightE3645A},
 	INSTR{:AgilentE3645A}
@@ -9,7 +18,7 @@ E364x2 = Union{INSTR{:KeysightE3646A},
 	INSTR{:AgilentE3649A}
 	}
 					
-# FGEN
+# AWG
 F332x1 = Union{INSTR{:Agilent33250A}
 	}
 F335x2 = Union{INSTR{:Agilent33500B},
@@ -24,7 +33,14 @@ KE200x = Union{INSTR{:Keithley2000},
 	INSTR{:KE2001},
 	}
 	
-# SCOPE
+# Lecroy SCOPE
 LCR6xxx = Union{INSTR{:HDO6054A},
 	INSTR{:HRO64zi}
 	}
+# NI PXI SCOPE
+NISCOPE = Union{INSTR{:NI5122},
+			INSTR{:NI5114},
+			INSTR{:NI5152},
+			}
+
+

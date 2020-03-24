@@ -1,11 +1,8 @@
-module SCOPE
-include("comm_utils.jl")
-include("INSTR_TYPES.jl")
 # METHOD TEMPLATES
 # basic method template: "This method has priority over the more general T:<Union{....} template"
 #set_wfm(fgen::INSTR{:Agilent33500B},func="sinusoid",ch=1) = write(fgen.obj,"SOURce$ch:FUNC $func")
 # more general method template, superseded by basic method template
-#set_wfm(fgen::T,func="sinusoid",ch=1) where {T<:Union{F332x1,F335x2}} = write(fgen.obj,"SOURce$ch:FUNC $func")
+#set_wfm(fgen::T;func="sinusoid",ch=1) where {T<:Union{F332x1,F335x2}} = write(fgen.obj,"SOURce$ch:FUNC $func")
 
 # Reset
 reset_instr(scope::T) where {T<:LCR6xxx} = write(scope.obj,"*RST")
@@ -13,73 +10,83 @@ reset_instr(scope::T) where {T<:LCR6xxx} = write(scope.obj,"*RST")
 get_idn(scope::T) where {T<:LCR6xxx} = query(scope.obj,"*IDN?")
 # Default setup
 default_setup(scope::T) where {T<:LCR6xxx} = write(scope.obj,"VBS app.SetToDefaultSetup")
-# Vertical range
-set_vrange(scope::T,ch=1,rn=8) where {T<:LCR6xxx} = write(scope.obj,"VBS app.Acquisition.C$ch.VerScale=$(rn/8)")
-# Vertical scale
-set_vscale(scope::T,ch=1,scal=8) where {T<:LCR6xxx} = write(scope.obj,"VBS app.Acquisition.C$ch.VerScale=$scal")
-# Vertical offset
-set_voffs(scope::T,ch=1,offs=0) where {T<:LCR6xxx} = write(scope.obj,"VBS app.Acquisition.C$ch.VerOffset=$offs")
-# Channel coupling
-set_coupling(scope::T,ch=1,cpl=1) where {T<:LCR6xxx} = write(scope.obj,"VBS app.Acquisition.C$ch.Coupling=$cpl")
-# Channel enabled
-set_ch_state(scope::T,ch=1,st="on") where {T<:LCR6xxx} = write(scope.obj,"VBS app.Acquisition.C$ch.View=$st")
-# Probe attenuation
-set_atten(scope::T,ch=1,att=10) where {T<:LCR6xxx} = write(scope.obj,"VBS app.Acquisition.C$ch.ProbeAttenuation=$att")
 # Screen Gridmode
-set_gridmode(scope::T,gridmode="Single") where {T<:LCR6xxx} = write(scope.obj,"VBS app.Display.GridMode=$gridmode")
+set_gridmode(scope::T;gridmode=1) where {T<:LCR6xxx} = write(scope.obj,"VBS app.Display.GridMode=$gridmode")
+
+## CHANNEL
+# Channel coupling
+set_coupling(scope::T;ch::String="1",cpl::Int=1) where {T<:LCR6xxx} = write(scope.obj,"VBS app.Acquisition.C$ch.Coupling=$cpl")
+# Channel enabled
+set_ch_state(scope::T;ch::String="1",st::String="on") where {T<:LCR6xxx} = write(scope.obj,"VBS app.Acquisition.C$ch.View=$st")
+# Probe attenuation
+set_atten(scope::T;ch::String="1",att=10) where {T<:LCR6xxx} = write(scope.obj,"VBS app.Acquisition.C$ch.ProbeAttenuation=$att")
+
+# BW limit
+set_bw_lim(scope::T;ch::String="1",bw::Int=0) where {T<:LCR6xxx} = write(scope.obj,"VBS app.Acquisition.C$ch.BandwidthLimit=$bw")
 # Nr of averages
-set_nr_avg(scope::T,ch=1,nr=1) where {T<:LCR6xxx} = write(scope.obj,"VBS app.Acquisition.C$ch.AverageSweeps=$nr")
+set_nr_avg(scope::T;ch::String="1",navg::Int=1) where {T<:LCR6xxx} = write(scope.obj,"VBS app.Acquisition.C$ch.AverageSweeps=$navg")
 # EnhanceRes
-set_eres(scope::T,ch=1,bits=0) where {T<:LCR6xxx} = write(scope.obj,"VBS app.Acquisition.C$ch.EnhanceResType=$bits")
+set_eres(scope::T;ch::String="1",bits::Int=0) where {T<:LCR6xxx} = write(scope.obj,"VBS app.Acquisition.C$ch.EnhanceResType=$bits")
 # Degauss
-degauss(scope::T,ch=1,probe="CP030A") where {T<:LCR6xxx} = write(scope.obj,"VBS app.Acquisition.C$ch.InputB.$probe.Degauss")
+degauss(scope::T;ch::String="1",probe::String="CP030A") where {T<:LCR6xxx} = write(scope.obj,"VBS app.Acquisition.C$ch.InputB.$probe.Degauss")
 # Clear sweeps
 clear_sweeps(scope::T) where {T<:LCR6xxx} = write(scope.obj,"VBS app.ClearSweeps")
+
+## VERTICAL
+# Vertical range
+set_vrange(scope::T;ch::String="1",vrang=8) where {T<:LCR6xxx} = write(scope.obj,"VBS app.Acquisition.C$ch.VerScale=$(vrang/8)")
+# Vertical scale
+set_vscale(scope::T;ch::String="1",volt=8) where {T<:LCR6xxx} = write(scope.obj,"VBS app.Acquisition.C$ch.VerScale=$volt")
+# Vertical offset
+set_voffs(scope::T;ch::String="1",voffs=0) where {T<:LCR6xxx} = write(scope.obj,"VBS app.Acquisition.C$ch.VerOffset=$voffs")
+
+## HORIZONTAL
 # Nr of acquisition points
-function set_nr_pts(scope::T,npts=1e6) where {T<:LCR6xxx} 
+function set_nr_pts(scope::T;npts=1e6) where {T<:LCR6xxx} 
 	write(scope.obj,"VBS app.Acquisition.Horizontal.Maximize=0")
 	write(scope.obj,"VBS app.Acquisition.Horizontal.MaxSamples=$(Int64(npts))")
 end
 # Sampling rate
-function set_srate(scope::T,sr=1e6) where {T<:LCR6xxx} 
+function set_srate(scope::T;sr=1e6) where {T<:LCR6xxx} 
 	write(scope.obj,"VBS app.Acquisition.Horizontal.Maximize=1")
 	write(scope.obj,"VBS app.Acquisition.Horizontal.SampleRate=$(Int64(sr))")
 end
 # Acquisition duration
-set_hduration(scope::T,d=1e-3) where {T<:LCR6xxx} = write(scope.obj,"VBS app.Acquisition.Horizontal.HorScale=$(d/10)")
+set_hduration(scope::T;d=1e-3) where {T<:LCR6xxx} = write(scope.obj,"VBS app.Acquisition.Horizontal.HorScale=$(d/10)")
 # Horizontal offset origin
-set_hoffs_div(scope::T,href=1) where {T<:LCR6xxx} = write(scope.obj,"VBS app.Acquisition.Horizontal.HorOffsetOrigin=$href")
+set_hoffs_div(scope::T;href::Int=1) where {T<:LCR6xxx} = write(scope.obj,"VBS app.Acquisition.Horizontal.HorOffsetOrigin=$href")
 
+## MEASUREMENTS
 # Set Measurement
-function set_meas(scope::T,ch=1,fct=0,par=1,vw=1) where {T<:LCR6xxx}
+function set_meas(scope::T;ch::String="1",fct::Int=0,par::Int=1,vw::Int=1) where {T<:LCR6xxx}
 	write(scope.obj,"VBS app.Measure.P$par.ParamEngine=$fct")
 	write(scope.obj,"VBS app.Measure.P$par.Source1=$ch")
 	write(scope.obj,"VBS app.Measure.P$par.View=$vw")
 end
 # Get Measurement
-get_meas(scope::T,par=1) where {T<:LCR6xxx} = query(scope.obj,"VBS? Return=app.Measure.P$par.Out.Result.Value")
-# Set trigger source
-set_trg_src(scope::T,ch=1) where {T<:LCR6xxx} = write(scope.obj,"VBS app.Acquisition.Trigger.Edge.Source=$ch")
+get_meas(scope::T;par::Int=1) where {T<:LCR6xxx} = query(scope.obj,"VBS? Return=app.Measure.P$par.Out.Result.Value")
+
+## TRIGGER
 # Set trigger type
-set_trg_typ(scope::T,tp=0) where {T<:LCR6xxx} = write(scope.obj,"VBS app.Acquisition.Trigger.Type=$tp")
+set_trig_typ(scope::T;tp::Int=0) where {T<:LCR6xxx} = write(scope.obj,"VBS app.Acquisition.Trigger.Type=$tp")
+# Set trigger source
+set_trig_src(scope::T;ch::String="1") where {T<:LCR6xxx} = write(scope.obj,"VBS app.Acquisition.Trigger.Edge.Source=$ch")
 # Set trigger mode
-set_trg_mode(scope::T,mode=0) where {T<:LCR6xxx} = write(scope.obj,"VBS app.Acquisition.TriggerMode=$mode")
+set_trig_mode(scope::T;mode::Int=0) where {T<:LCR6xxx} = write(scope.obj,"VBS app.Acquisition.TriggerMode=$mode")
 # Set trigger slope
-set_trg_slope(scope::T,slp=0) where {T<:LCR6xxx} = write(scope.obj,"VBS app.Acquisition.Trigger.Edge.Slope=$slp")
+set_trig_slope(scope::T;slp::Int=0) where {T<:LCR6xxx} = write(scope.obj,"VBS app.Acquisition.Trigger.Edge.Slope=$slp")
 # Set trigger level
-set_trg_lev(scope::T,lev=1) where {T<:LCR6xxx} = write(scope.obj,"VBS app.Acquisition.Trigger.Edge.Level=$lev")
+set_trig_lev(scope::T;lev=1) where {T<:LCR6xxx} = write(scope.obj,"VBS app.Acquisition.Trigger.Edge.Level=$lev")
 # Set trigger holdoff
-set_trg_holdoff(scope::T,hf=1e-9) where {T<:LCR6xxx} = write(scope.obj,"VBS app.Acquisition.Trigger.Edge.HoldoffTime=$hf")
+set_trig_holdoff(scope::T;hf=1e-9) where {T<:LCR6xxx} = write(scope.obj,"VBS app.Acquisition.Trigger.Edge.HoldoffTime=$hf")
 # Trigger delay time
-set_hoffs_t(scope::T,href=1e-3) where {T<:LCR6xxx} = write(scope.obj,"VBS app.Acquisition.Horizontal.HorOffset=$href")
+set_hoffs_t(scope::T;href=1e-3) where {T<:LCR6xxx} = write(scope.obj,"VBS app.Acquisition.Horizontal.HorOffset=$href")
 # Set trigger coupling
-set_trg_cpl(scope::T,ch=1,cpl=0) where {T<:LCR6xxx} = write(scope.obj,"VBS app.Acquisition.Trigger.C$(ch)Coupling=$cpl")
-# BW limit
-set_bw_lim(scope::T,ch=1,bw=0) where {T<:LCR6xxx} = write(scope.obj,"VBS app.Acquisition.C$ch.BandwidthLimit=$bw")
+set_trig_cpl(scope::T;ch::String="1",cpl::Int=0) where {T<:LCR6xxx} = write(scope.obj,"VBS app.Acquisition.Trigger.C$(ch)Coupling=$cpl")
 
 
-# Fetch waveform
-function fetch_wfm(scope::T, ch=1) where {T<:LCR6xxx}
+## FETCH WAVEFORM
+function fetch_wfm(scope::T; ch::String="1") where {T<:LCR6xxx}
 	valid_wfm_template_name     = "LECROY_2_3"
 	valid_wfm_template_desc_pos = 17:26
 	wfm_desc_len                = 346
@@ -143,5 +150,3 @@ function fetch_wfm(scope::T, ch=1) where {T<:LCR6xxx}
 	y = y .* gain .+ offset
 	return y, initial_x, x_increm
 end
-
-end #endmodule
