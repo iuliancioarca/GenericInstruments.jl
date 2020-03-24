@@ -137,33 +137,6 @@ GI.SCOPE.set_bw_lim(scope1,ch=1,bw=0)
 # Disconnect everything
 GI.SCOPE.set_instr_state!(resmgr, scope1; act = GI.disconnect!)
 
-# niScope
-# Connect
-#GI.SCOPE.set_instr_state!(resmgr, niScope1; act = GI.SCOPE.connect!) # not wotking yet
-GI.SCOPE.niScope_init(niScope1)
-GI.SCOPE.niScope_AutoSetup(niScope1)
-# user defined low_level
-GI.SCOPE.set_coupling(niScope1;ch="1",cpl=1)
-GI.SCOPE.niScope_GetAttributeViInt64(niScope1, "1", 1250003) # check coupling :( crash
-
-#vrange
-GI.SCOPE.set_vrange(niScope1;ch="1",vrang=0.35)
-GI.SCOPE.niScope_GetAttributeViReal64(niScope1, "1", 1250001) # check vrange: OK, it approximates to next value
-
-
-GI.SCOPE.niScope_ConfigureVertical(niScope1,
-	ch=0,vrang=5.0,voffs=0.5,cpl=Int32(1),att=1.0,st=Int16(1))
-GI.SCOPE.niScope_ConfigureHorizontalTiming(niScope1,
-minSampleRate=2e5,minNumPts=1000,refPosition=0.1,numRecords=1,enforceRealtime=1)
-GI.SCOPE.niScope_ConfigureTriggerImmediate(niScope1)
-GI.SCOPE.niScope_InitiateAcquisition(niScope1)
-GI.SCOPE.niScope_ActualRecordLength(niScope1)
-y,info = GI.SCOPE.fetch_wfm(niScope1,ch=0)
-plot(y)
-# Disconnect everything
-GI.SCOPE.set_instr_state!(resmgr, niScope1; act = GI.disconnect!)
-
-
 # Digital Multimeter
 # Connect
 GI.set_instr_state!(resmgr, dmm1; act = GI.connect!)

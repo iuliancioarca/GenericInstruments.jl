@@ -97,7 +97,7 @@ function niScope_SetAttributeViInt64(scope::T, ch="", attr=1, val=1) where {T<:N
 end
 
 #ViStatus niScope_SetAttributeViReal64 (ViSession vi, ViConstString channelList, ViAttr attributeID, ViReal64 value);
-function niScope_SetAttributeViReal64(scope::T, ch="", attr=1, val=1) where {T<:NISCOPE}
+function niScope_SetAttributeViReal64(scope::T, ch="", attr=1, val=1.0) where {T<:NISCOPE}
 	sym    = Libdl.dlsym(lib, :niScope_SetAttributeViReal64)
 	chlist = [UInt8.(collect(ch)); UInt8(0)] # terminate with NULL char
 	status = ccall(sym, ViStatus, 
@@ -118,7 +118,7 @@ function niScope_SetAttributeViString(scope::T, ch="", attr=1, val=1) where {T<:
 end
 
 #ViStatus niScope_SetAttributeViBoolean (ViSession vi, ViConstString channelList, ViAttr attributeID, ViBoolean value);
-function niScope_SetAttributeViBoolean(scope::T, ch="", attr=1, val=1) where {T<:NISCOPE}
+function niScope_SetAttributeViBoolean(scope::T, ch="", attr=1, val=false) where {T<:NISCOPE}
 	sym    = Libdl.dlsym(lib, :niScope_SetAttributeViBoolean)
 	chlist = [UInt8.(collect(ch)); UInt8(0)] # terminate with NULL char
 	status = ccall(sym, ViStatus, 

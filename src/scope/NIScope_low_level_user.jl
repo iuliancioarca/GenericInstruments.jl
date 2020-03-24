@@ -24,9 +24,9 @@ end
 
 # Probe attenuation
 #Valid Values: Any positive real number. Typical values are 1, 10, and 100.
-function set_atten(scope::T;ch::String="1",att=10) where {T<:NISCOPE}
+function set_atten(scope::T;ch::String="1",atten=10) where {T<:NISCOPE}
 	NISCOPE_ATTR_PROBE_ATTENUATION=1250004; # ((1000000 + 250000) + 4)
-	status = niScope_SetAttributeViReal64(scope, ch, NISCOPE_ATTR_PROBE_ATTENUATION, Float64(att))
+	status = niScope_SetAttributeViReal64(scope, ch, NISCOPE_ATTR_PROBE_ATTENUATION, Float64(atten))
 end
 
 # BW limit
@@ -62,13 +62,13 @@ end
 # Nr of acquisition points 
 function set_nr_pts(scope::T;npts=1e6) where {T<:NISCOPE}
 	NISCOPE_ATTR_HORZ_MIN_NUM_PTS=1250009; # ((1000000 + 250000) + 9)
-	status = niScope_SetAttributeViInt32(scope, ch, NISCOPE_ATTR_HORZ_MIN_NUM_PTS, Int32(npts))
+	status = niScope_SetAttributeViInt32(scope, "", NISCOPE_ATTR_HORZ_MIN_NUM_PTS, Int32(npts))
 end
 
 # Sampling rate
 function set_srate(scope::T;sr=1e6) where {T<:NISCOPE}
 	NISCOPE_ATTR_MIN_SAMPLE_RATE=1150009; # ((1000000 + 150000) + 9)
-	status = niScope_SetAttributeViReal64(scope, ch, NISCOPE_ATTR_MIN_SAMPLE_RATE, Float64(sr))
+	status = niScope_SetAttributeViReal64(scope, "", NISCOPE_ATTR_MIN_SAMPLE_RATE, Float64(sr))
 end
 
 # Horizontal offset origin
@@ -76,7 +76,7 @@ end
 #Valid Values: 0.0 – 100.0
 function set_hoffs_div(scope::T;href::Int=1) where {T<:NISCOPE}
 	NISCOPE_ATTR_HORZ_RECORD_REF_POSITION=1250011; # ((1000000 + 250000) + 11)
-	status = niScope_SetAttributeViReal64(scope, ch, NISCOPE_ATTR_HORZ_RECORD_REF_POSITION, Float64(href*10))
+	status = niScope_SetAttributeViReal64(scope, "", NISCOPE_ATTR_HORZ_RECORD_REF_POSITION, Float64(href*10))
 end
 
 
@@ -84,37 +84,37 @@ end
 # Set trigger type
 function set_trig_typ(scope::T;tp::Int=0) where {T<:NISCOPE}
 	NISCOPE_ATTR_TRIGGER_TYPE=1250012; # ((1000000 + 250000) + 12)
-	status = niScope_SetAttributeViInt32(scope, ch, NISCOPE_ATTR_TRIGGER_TYPE, Int32(tp))
+	status = niScope_SetAttributeViInt32(scope, "", NISCOPE_ATTR_TRIGGER_TYPE, Int32(tp))
 end
 
 # Set trigger source
-function set_trig_src(scope::T;ch::String="1",val) where {T<:NISCOPE}
+function set_trig_src(scope::T;val::String="1") where {T<:NISCOPE}
 	NISCOPE_ATTR_TRIGGER_SOURCE=1250013; # ((1000000 + 250000) + 13)
-	status = niScope_SetAttributeViString(scope::T, ch="", NISCOPE_ATTR_TRIGGER_SOURCE, val)
+	status = niScope_SetAttributeViString(scope::T, "", NISCOPE_ATTR_TRIGGER_SOURCE, val)
 end
 
 # Set trigger slope
 function set_trig_slope(scope::T;slp::Int=0) where {T<:NISCOPE}
 	NISCOPE_ATTR_TRIGGER_SLOPE=1250018; # ((1000000 + 250000) + 18)
-	status = niScope_SetAttributeViString(scope::T, ch="", NISCOPE_ATTR_TRIGGER_SLOPE, Int32(slp))
+	status = niScope_SetAttributeViString(scope::T, "", NISCOPE_ATTR_TRIGGER_SLOPE, Int32(slp))
 end
 
 # Set trigger level
 function set_trig_lev(scope::T;lev=1) where {T<:NISCOPE}
 	NISCOPE_ATTR_TRIGGER_LEVEL=1250017; # ((1000000 + 250000) + 17)
-	status = niScope_SetAttributeViReal64(scope, ch, NISCOPE_ATTR_TRIGGER_LEVEL, Float64(lev))
+	status = niScope_SetAttributeViReal64(scope, "", NISCOPE_ATTR_TRIGGER_LEVEL, Float64(lev))
 end
 
 # Set trigger holdoff
 function set_trig_holdoff(scope::T;hf=1e-9) where {T<:NISCOPE}
 	NISCOPE_ATTR_TRIGGER_HOLDOFF=1250016; # ((1000000 + 250000) + 16)
-	status = niScope_SetAttributeViReal64(scope, ch, NISCOPE_ATTR_TRIGGER_HOLDOFF, Float64(hf))
+	status = niScope_SetAttributeViReal64(scope, "", NISCOPE_ATTR_TRIGGER_HOLDOFF, Float64(hf))
 end
 
 # Trigger delay time
 function set_hoffs_t(scope::T;href=1e-3) where {T<:NISCOPE}
 	NISCOPE_ATTR_TRIGGER_DELAY_TIME=1250015; # ((1000000 + 250000) + 15)
-	status = niScope_SetAttributeViReal64(scope, ch, NISCOPE_ATTR_TRIGGER_DELAY_TIME, Float64(href))
+	status = niScope_SetAttributeViReal64(scope, "", NISCOPE_ATTR_TRIGGER_DELAY_TIME, Float64(href))
 end
 
 # Set trigger coupling
@@ -123,20 +123,5 @@ function set_trig_cpl(scope::T;ch::String="1",cpl::Int=0) where {T<:NISCOPE}
 	status = niScope_SetAttributeViInt32(scope, ch, NISCOPE_ATTR_TRIGGER_COUPLING, Int32(cpl))
 end
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# Constants
+#NISCOPE_ATTR_HORZ_SAMPLE_RATE=1250010; # ((1000000 + 250000) + 10)
