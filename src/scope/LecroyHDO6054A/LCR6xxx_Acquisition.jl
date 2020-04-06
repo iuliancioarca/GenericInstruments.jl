@@ -61,5 +61,7 @@ function fetch_wfm(scope::T; ch::String="1") where {T<:LCR6xxx}
 	y = reinterpret(Int16,y_buffer)
 	# Scale and offset
 	y = y .* gain .+ offset
+	initial_x = parse(Float64, initial_x)
+	x_increm = parse(Float64, x_increm)
 	return y, initial_x, x_increm
 end
