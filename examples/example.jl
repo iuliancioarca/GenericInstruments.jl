@@ -1,8 +1,4 @@
-# Low level function examples
-####################################
-cd(raw"C:\Iulian\GenericInstruments.jl-niScope_rearrange\src")
-include("GenericInstruments.jl")
-using .GenericInstruments
+using GenericInstruments
 const GI = GenericInstruments
 ####################################
 # Instantiate obj
@@ -113,7 +109,7 @@ GI.SCOPE.set_hduration(scope1,d=1e-3)
 # Horizontal offset origin
 GI.SCOPE.set_hoffs_div(scope1,href=1)
 # Set Measurement
-GI.SCOPE.set_meas(scope1,ch=1,fct=0,par=1,vw=1) 
+GI.SCOPE.set_meas(scope1,ch=1,fct=0,par=1,vw=1)
 # Get Measurement
 GI.SCOPE.get_meas(scope1,par=1)
 # Set trigger source
@@ -163,9 +159,3 @@ GI.abort_meas(dmm1)
 y, unit = GI.read_meas(dmm1)
 # Disconnect
 GI.set_instr_state!(resmgr, dmm1; act = GI.disconnect!)
-
-
-
-
-
-

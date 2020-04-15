@@ -1,0 +1,16 @@
+name = "GenericInstruments"
+uuid = "b8d24480-b8ee-42fe-a917-db159b4b1a29"
+authors = ["iuliancioarca"]
+version = "0.1.0"
+
+[deps]
+Instruments = "2c6aeda0-45f5-11e9-10ba-f7b3d6416888"
+
+[compat]
+julia = "1"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
