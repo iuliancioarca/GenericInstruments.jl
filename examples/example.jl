@@ -8,11 +8,11 @@ dmm1 = GI.DMM.INSTR(:KE2000, "GPIB0::2::INSTR")
 psu1 = GI.PSU.INSTR(:KeysightE3645A, "GPIB0::5::INSTR")
 psu2 = GI.PSU.INSTR(:AgilentE3646A, "GPIB0::6::INSTR")
 awg1 = GI.AWG.INSTR(:Keysight33500B, "USB0::0x0957::0x2C07::MY52803073::INSTR")
-GI.SCOPE.set_instr_state!(resmgr, scope1, dmm1, psu1, psu2, awg1; act = GI.connect!) #this will error if no instruments availale
 ####################################
 # USAGE
 ####################################
 # Power supply
+GI.PSU.set_instr_state!(resmgr, psu1, psu2; act = GI.PSU.connect!)
 # IDN
 GI.PSU.get_idn(psu1)
 GI.PSU.get_idn(psu2)
@@ -20,81 +20,82 @@ GI.PSU.get_idn(psu2)
 GI.PSU.reset_instr(psu1)
 GI.PSU.reset_instr(psu2)
 # Set range
-GI.PSU.set_range(psu1,ch=1,vrang="low")
-GI.PSU.set_range(psu2,ch=1,vrang="high")
+GI.PSU.set_range(psu1,ch="1",vrang="low")
+GI.PSU.set_range(psu2,ch="1",vrang="high")
 # Set voltage
-GI.PSU.set_volt(psu1,ch=1,volt=5)
-GI.PSU.set_volt(psu2,ch=1,volt=3)
+GI.PSU.set_volt(psu1,ch="1",volt=5)
+GI.PSU.set_volt(psu2,ch="1",volt=3)
 # Set current compliance
-GI.PSU.set_compl(psu1,ch=1,crtlim=0.6)
-GI.PSU.set_compl(psu2,ch=1,crtlim=1.1)
+GI.PSU.set_compl(psu1,ch="1",crtlim=0.6)
+GI.PSU.set_compl(psu2,ch="1",crtlim=1.1)
 # Output on/off
-GI.PSU.set_outp(psu1,ch=1,st="on")
-GI.PSU.set_outp(psu2,ch=1,st="on")
+GI.PSU.set_outp(psu1,ch="1",st="on")
+GI.PSU.set_outp(psu2,ch="1",st="on")
 # Multiple instructions
-#GI.PSU.set_volt_compl(psu1,ch=1, 5, 0.1)
+#GI.PSU.set_volt_compl(psu1,ch="1", 5, 0.1)
 # Disconnect everything
-GI.PSU.set_instr_state!(resmgr, psu1, psu2; act = GI.disconnect!)
+GI.PSU.set_instr_state!(resmgr, psu1, psu2; act = GI.PSU.disconnect!)
 ####################################
 # AWG
+GI.AWG.set_instr_state!(resmgr, awg1; act = GI.AWG.connect!)
 # IDN
 GI.AWG.get_idn(awg1)
 # Reset
 GI.AWG.reset_instr(awg1)
 # Output load INF
-GI.AWG.set_load(awg1,ch=1,load="INF")
+GI.AWG.set_load(awg1,ch="1",load="INF")
 # Wfm
-GI.AWG.set_wfm(awg1,ch=1,func="square")
+GI.AWG.set_wfm(awg1,ch="1",func="square")
 # Amplitude
-GI.AWG.set_amplit(awg1,ch=1,unit="vpp",volt=1)
+GI.AWG.set_amplit(awg1,ch="1",unit="vpp",volt=1)
 # Offset
-GI.AWG.set_offs(awg1,ch=1,volt=0.4)
+GI.AWG.set_offs(awg1,ch="1",volt=0.4)
 # High level
-GI.AWG.set_hilev(awg1,ch=1,volt=3)
+GI.AWG.set_hilev(awg1,ch="1",volt=3)
 # Low level
-GI.AWG.set_lolev(awg1,ch=1,volt=1)
+GI.AWG.set_lolev(awg1,ch="1",volt=1)
 # Duty cycle
-GI.AWG.set_duty(awg1,ch=1,func="square",duty=22)
+GI.AWG.set_duty(awg1,ch="1",func="square",duty=22)
 # Arbitrary waveform
-GI.AWG.clear_arbs(awg1,ch=1)
+GI.AWG.clear_arbs(awg1,ch="1")
 wfm = Float32.([0,0, 0,1, 1,1,1,-1,-1,-1,-1,-1,1,1,1, 0, 0,0,0,0]) # normed to -1:1
-GI.AWG.send_arb(awg1,ch=1,wfm=wfm,dt=1e-7,arb="mywfm")
-GI.AWG.set_wfm(awg1,ch=1,func="ARB")
-GI.AWG.set_arb_wfm(awg1,ch=1,arb="mywfm")
-GI.AWG.set_burst_stat(awg1,ch=1,st="on")
-GI.AWG.set_trig_sour(awg1,ch=1,sour="BUS")
-GI.AWG.set_outp(awg1,ch=1,st="on")
+GI.AWG.send_arb(awg1,ch="1",wfm=wfm,dt=1e-7,arb="mywfm")
+GI.AWG.set_wfm(awg1,ch="1",func="ARB")
+GI.AWG.set_arb_wfm(awg1,ch="1",arb="mywfm")
+GI.AWG.set_burst_stat(awg1,ch="1",st="on")
+GI.AWG.set_trig_sour(awg1,ch="1",sour="BUS")
+GI.AWG.set_outp(awg1,ch="1",st="on")
 GI.AWG.send_soft_trig(awg1)
 # Disconnect everything
-GI.AWG.set_instr_state!(resmgr, awg1; act = GI.disconnect!)
+GI.AWG.set_instr_state!(resmgr, awg1; act = GI.AWG.disconnect!)
 ####################################
 # SCOPE
 # Most commands needs Dicts...
-GI.SCOPE.set_instr_state!(resmgr, scope1; act = GI.connect!)
+GI.SCOPE.set_instr_state!(resmgr, scope1; act = GI.SCOPE.connect!)
 # IDN
 GI.SCOPE.get_idn(scope1)
 # Fetch waveform from channel 1
-y, initial_x, x_increm = GI.SCOPE.fetch_wfm(scope1,ch=1)
+y, initial_x, x_increm = GI.SCOPE.fetch_wfm(scope1,ch="1")
 # Default Setup
 GI.SCOPE.default_setup(scope1)
 # Vertical range
-GI.SCOPE.set_vrange(scope1,ch=1,vrang=12)
+GI.SCOPE.set_vrange(scope1,ch="1",vrang=12)
 # Vertical scale
-GI.SCOPE.set_vscale(scope1,ch=1,volt=0.2)
+GI.SCOPE.set_vscale(scope1,ch="1",volt=0.2)
 # Vertical offset
-GI.SCOPE.set_voffs(scope1,ch=1,voffs=2.2)
+GI.SCOPE.set_voffs(scope1,ch="1",voffs=2.2)
 # Channel coupling
-GI.SCOPE.set_coupling(scope1,ch=1,cpl=2)
+GI.SCOPE.set_coupling(scope1,ch="1",cpl=2)
 # Channel enabled
-GI.SCOPE.set_ch_state(scope1,ch=1,st=0)
+GI.SCOPE.set_ch_state(scope1,ch="1",st=0)
 # Probe attenuation
-GI.SCOPE.set_atten(scope1,ch=1,att=1)
+GI.SCOPE.set_atten(scope1,ch="1",att=1)
 # Screen Gridmode
 GI.SCOPE.set_gridmode(scope1,gridmode=1)
 # Nr of averages
-GI.SCOPE.set_nr_avg(scope1,ch=1,navg=10)
+GI.SCOPE.set_nr_avg(scope1,ch="1",navg=10)
 # EnhanceRes
-GI.SCOPE.set_eres(scope1,ch=1,bits=1)
+GI.SCOPE.set_eres(scope1,ch="1",bits=1)
 # Degauss
 GI.SCOPE.degauss(scope1,ch=4,probe="CP030A")
 # Clear sweeps
@@ -108,7 +109,7 @@ GI.SCOPE.set_hduration(scope1,d=1e-3)
 # Horizontal offset origin
 GI.SCOPE.set_hoffs_div(scope1,href=1)
 # Set Measurement
-GI.SCOPE.set_meas(scope1,ch=1,fct=0,par=1,vw=1)
+GI.SCOPE.set_meas(scope1,ch="1",fct=0,par=1,vw=1)
 # Get Measurement
 GI.SCOPE.get_meas(scope1,par=1)
 # Set trigger source
@@ -126,15 +127,15 @@ GI.SCOPE.set_trg_holdoff(scope1,hf=1e-3)
 # Trigger delay time
 GI.SCOPE.set_hoffs_t(scope1,href=11e-3)
 # Set trigger coupling
-GI.SCOPE.set_trg_cpl(scope1,ch=1,cpl=0)
+GI.SCOPE.set_trg_cpl(scope1,ch="1",cpl=0)
 # BW limit
-GI.SCOPE.set_bw_lim(scope1,ch=1,bw=0)
+GI.SCOPE.set_bw_lim(scope1,ch="1",bw=0)
 # Disconnect everything
-GI.SCOPE.set_instr_state!(resmgr, scope1; act = GI.disconnect!)
+GI.SCOPE.set_instr_state!(resmgr, scope1; act = GI.SCOPE.disconnect!)
 
 # Digital Multimeter
 # Connect
-GI.set_instr_state!(resmgr, dmm1; act = GI.connect!)
+GI.DMM.set_instr_state!(resmgr, dmm1; act = GI.DMM.connect!)
 # Reset
 GI.reset_instr(dmm1)
 # Clear
@@ -157,4 +158,4 @@ GI.abort_meas(dmm1)
 # Read measurement
 y, unit = GI.read_meas(dmm1)
 # Disconnect
-GI.set_instr_state!(resmgr, dmm1; act = GI.disconnect!)
+GI.DMM.set_instr_state!(resmgr, dmm1; act = GI.DMM.disconnect!)
