@@ -1,5 +1,5 @@
 # niScope_64.dll location:
-const NI_libname = "C:/Program Files/IVI Foundation/IVI/Bin/niScope_64"
+const NIScope_lib = "C:/Program Files/IVI Foundation/IVI/Bin/niScope_64"
 
 ## Required Vi types:
 ViStatus    = Int32
