@@ -6,8 +6,9 @@
 [![Coveralls](https://coveralls.io/repos/github/iuliancioarca/GenericInstruments.jl/badge.svg?branch=master)](https://coveralls.io/github/iuliancioarca/GenericInstruments.jl?branch=master)
 
 Based on https://github.com/BBN-Q/Instruments.jl. Bundles similar functionalities of instruments under a single generic object: power supplies, arbitrary waveform generators, etc.
+
 Please install the following before adding this package:
-1. Install NIVISA (currently tested only in Windows)
+1. Install NIVISA (currently tested only on Windows)
 2. Install PXI instrument drivers (if needed; currently supports scopes such as NI5122/5114)
 3. Install Instruments.jl as low level VISA wrapper: ]add https://github.com/BBN-Q/Instruments.jl.git
 4. ]add https://github.com/iuliancioarca/GenericInstruments.jl.git
