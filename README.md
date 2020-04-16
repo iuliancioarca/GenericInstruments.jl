@@ -6,9 +6,17 @@
 [![Coveralls](https://coveralls.io/repos/github/iuliancioarca/GenericInstruments.jl/badge.svg?branch=master)](https://coveralls.io/github/iuliancioarca/GenericInstruments.jl?branch=master)
 
 Based on https://github.com/BBN-Q/Instruments.jl. Bundles similar functionalities of instruments under a single generic object: power supplies, arbitrary waveform generators, etc.
+Please install the following before adding this package:
+1. Install NIVISA (currently tested only in Windows)
+2. Install PXI instrument drivers (if needed; currently supports scopes such as NI5122/5114)
+3. Install Instruments.jl as low level VISA wrapper: ]add https://github.com/BBN-Q/Instruments.jl.git
+4. ]add https://github.com/iuliancioarca/GenericInstruments.jl.git
+using GenericInstruments
 
-]add https://github.com/BBN-Q/Instruments.jl.git
+Supported instruments:
+Scope: Lecroy 6054A (should work for the entire 6xxx-8xxx series), NIScope 5122/5114/5152
+Arbitrary waveform generators: Agilent 33500 series dual channel, Agilent 33250A single channel
+Power supplies: Agilent E36xx series, single or dual channel (E3645/E3646/E3649)
+Digital multimeters: WIP on Ketihley 2000/20001/7510
 
-using Instruments, GenericInstruments
-
-See examples
+See examples folder for usage
