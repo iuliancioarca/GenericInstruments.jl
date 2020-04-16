@@ -38,7 +38,7 @@ LCR6xxx = Union{INSTR{:HDO6054A},
 	INSTR{:HRO64zi}
 	}
 # NI PXI SCOPE
-NISCOPE = Union{INSTR{:NI5122},
+NIScope = Union{INSTR{:NI5122},
 			INSTR{:NI5114},
 			INSTR{:NI5152},
 			}
