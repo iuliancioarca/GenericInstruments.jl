@@ -9,14 +9,10 @@ struct niScope_wfmInfo
 end
 
 # Fetch wfm
-"""
-Wrapper over niScope_Fetch, used for compatibility with LecroyHDO6054A
-y, wfmInfo[1] = fetch_wfm(scope::T;h::String="0") where {T<:NIScope}
-"""
 function fetch_wfm(scope::T;ch::String="1") where {T<:NIScope}
 	# niScope channels start from 0, so subtract 1
 	ch = string(parse(Int64,ch) - 1)
-	y, aux = niScope_Fetch(scope;ch)
+	y, aux = niScope_Fetch(scope;ch=ch)
 	return y, aux.absoluteInitialX, aux.xIncrement
 end
 
