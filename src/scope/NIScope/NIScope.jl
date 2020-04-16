@@ -1,6 +1,6 @@
-NI_lib_found = Libdl.find_library(NI_libname)
-if ~isempty(NI_lib_found)
-lib = Libdl.dlopen(NI_libname) # Open the library explicitly.
+NIScope_lib_found = Libdl.find_library(NIScope_lib)
+if ~isempty(NIScope_lib_found)
+#const lib = Libdl.dlopen(NIScope_lib) # Open the library explicitly. not working with dlsym in packages...
 else
 @warn "NI PXI libraries not found!\nPXI functionality broken\nPlease install NI drivers!"
 end

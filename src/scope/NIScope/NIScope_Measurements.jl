@@ -36,11 +36,10 @@ meas = niScope_ReadMeasurement(scope::T,ch=0,fct=7) where {T<:NIScope}
 """
 function niScope_ReadMeasurement(scope::T;ch=0,fct=7) where {T<:NIScope}
 # niScope_ReadMeasurement (ViSession vi, ViConstString chlist, ViReal64 timeout, ViInt32 scalarMeasFunction, ViReal64* result);
-	sym = Libdl.dlsym(lib, :niScope_ReadMeasurement)
 	chlist = [UInt8.(collect("0")); UInt8(0)] # terminate with NULL char
 	timeout = 0.0
 	result = Ref(0.0)
 	#fct = 7 # see meas enum below
-	status = ccall(sym, ViStatus, (ViSession,ViConstString,ViReal64,ViInt32,Ref{Float64}) ,scope.obj, chlist, timeout, Int32(fct),result) # 5 is for pk-pk, 4 for RMS?
+	status = ccall((:niScope_ReadMeasurement, NIScope_lib), ViStatus, (ViSession,ViConstString,ViReal64,ViInt32,Ref{Float64}) ,scope.obj, chlist, timeout, Int32(fct),result) # 5 is for pk-pk, 4 for RMS?
 	result[]
 end
