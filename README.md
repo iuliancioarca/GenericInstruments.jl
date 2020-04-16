@@ -14,9 +14,9 @@ Please install the following before adding this package:
 using GenericInstruments
 
 Supported instruments:
-Scope: Lecroy 6054A (should work for the entire 6xxx-8xxx series), NIScope 5122/5114/5152
-Arbitrary waveform generators: Agilent 33500 series dual channel, Agilent 33250A single channel
-Power supplies: Agilent E36xx series, single or dual channel (E3645/E3646/E3649)
-Digital multimeters: WIP on Ketihley 2000/20001/7510
+1. Scope: Lecroy 6054A (should work for the entire 6xxx-8xxx series), NIScope 5122/5114/5152
+2. Arbitrary waveform generators: Agilent 33500 series dual channel, Agilent 33250A single channel
+3. Power supplies: Agilent E36xx series, single or dual channel (E3645/E3646/E3649)
+4. Digital multimeters: WIP on Ketihley 2000/20001/7510
 
 See examples folder for usage
