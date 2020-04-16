@@ -1,10 +1,7 @@
-cd(raw"C:\Iulian\GenericInstruments.jl-niScope_rearrange\src")
-include("GenericInstruments.jl")
-using .GenericInstruments
+using GenericInstruments
 const GI = GenericInstruments
 ####################################
 # Instantiate obj
-resmgr   = GI.ResourceManager()
 niScope1 = GI.SCOPE.INSTR(:NI5122,"PXI1Slot3")
 
 # Init
@@ -77,6 +74,3 @@ GI.SCOPE.niScope_InitiateAcquisition(niScope1)
 GI.SCOPE.niScope_ActualRecordLength(niScope1)
 y,info = GI.SCOPE.fetch_wfm(niScope1,ch=0)
 plot(y)
-# Disconnect everything
-GI.SCOPE.set_instr_state!(resmgr, niScope1; act = GI.disconnect!)
-
