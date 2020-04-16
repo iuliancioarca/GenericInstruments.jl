@@ -1,8 +1,8 @@
 LCR6xxx_Misc_Dict = Dict()
 # gridmode
-LCR6xxx_Dict["single"] = 0
-LCR6xxx_Dict["double"] = 1
-LCR6xxx_Dict["quad"]   = 2
+LCR6xxx_Misc_Dict["single"] = 0
+LCR6xxx_Misc_Dict["double"] = 1
+LCR6xxx_Misc_Dict["quad"]   = 2
 
 # Reset
 reset_instr(scope::T) where {T<:LCR6xxx} = write(scope.obj,"*RST")
