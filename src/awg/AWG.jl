@@ -1,7 +1,7 @@
 module AWG
 using Instruments
-include("..\\INSTR_TYPES.jl")
-include("..\\comm_utils.jl")
+include("../INSTR_TYPES.jl")
+include("../comm_utils.jl")
 #
 ## include all AWG files
 include("AWG_common.jl")
