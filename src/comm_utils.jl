@@ -1,11 +1,11 @@
 # Connect for Visa instruments
 function connect!(resmgr, instr::INSTR)
-	connect!(resmgr, instr.obj, instr.address)
+	Instruments.connect!(resmgr, instr.obj, instr.address)
 	instr.initialized = true
 end
 
 function disconnect!(instr::INSTR)
-	disconnect!(instr.obj)
+	Instruments.disconnect!(instr.obj)
 	instr.initialized = false
 end
 disconnect!(resmgr, instr) = disconnect!(instr)
