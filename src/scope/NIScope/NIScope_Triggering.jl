@@ -15,9 +15,8 @@ NIScope_Triggering_Dict["either"] = 2
 # Trigger coupling
 NIScope_Triggering_Dict["ac"]    = 0
 NIScope_Triggering_Dict["dc"]    = 1
-NIScope_Triggering_Dict["gnd"]   = 2
+NIScope_Triggering_Dict["hfrej"] = 2
 NIScope_Triggering_Dict["lfrej"] = 3
-NIScope_Triggering_Dict["hfrej"] = 4
 
 # Set trigger type
 function set_trig_type(scope::T;tp::String="edge") where {T<:NIScope}
@@ -59,7 +58,6 @@ end
 # Set trigger coupling
 function set_trig_cpl(scope::T;ch::String="1",cpl::String="dc") where {T<:NIScope}
 	NISCOPE_ATTR_TRIGGER_COUPLING=1250014; # ((1000000 + 250000) + 14)
-	ch  = NIScope_Triggering_Dict[ch]
 	cpl = NIScope_Triggering_Dict[cpl]
-	status = niScope_SetAttributeViInt32(scope, ch, NISCOPE_ATTR_TRIGGER_COUPLING, Int32(cpl))
+	status = niScope_SetAttributeViInt32(scope, "", NISCOPE_ATTR_TRIGGER_COUPLING, Int32(cpl))
 end

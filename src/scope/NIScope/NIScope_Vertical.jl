@@ -12,7 +12,8 @@ NIScope_Vertical_Dict["ac"]  = 0
 NIScope_Vertical_Dict["dc"]  = 1
 NIScope_Vertical_Dict["gnd"] = 2
 # Probe attenuation
-NIScope_Vertical_Dict["10x"] = 10
+NIScope_Vertical_Dict["10x"]  = 10
+NIScope_Vertical_Dict["100x"] = 100
 # BW limit
 #NISCOPE_VAL_BANDWIDTH_DEVICE_DEFAULT (0.0)
 #NISCOPE_VAL_20MHZ_BANDWIDTH (20000000.0)
@@ -38,7 +39,7 @@ function set_state(scope::T;ch::String="1",st::String="on") where {T<:NIScope}
 	NISCOPE_ATTR_CHANNEL_ENABLED=1250005; # ((1000000 + 250000) + 5)
 	ch = NIScope_Vertical_Dict[ch]
 	st = NIScope_Vertical_Dict[st]
-	status = niScope_SetAttributeViBoolean(scope, ch, NISCOPE_ATTR_CHANNEL_ENABLED, val)
+	status = niScope_SetAttributeViBoolean(scope, ch, NISCOPE_ATTR_CHANNEL_ENABLED, st)
 end
 # Channel input impedance
 function set_input_impedance(scope::T;ch::String="1",val::String="1M") where {T<:NIScope}
@@ -62,7 +63,7 @@ end
 function set_bw_lim(scope::T;ch::String="1",bw::String="full") where {T<:NIScope}
 	NISCOPE_ATTR_MAX_INPUT_FREQUENCY=1250006; # ((1000000 + 250000) + 6)
 	ch = NIScope_Vertical_Dict[ch]
-	bw = NIScope_Vertical_Dict[att]
+	bw = NIScope_Vertical_Dict[bw]
 	status = niScope_SetAttributeViReal64(scope, ch, NISCOPE_ATTR_MAX_INPUT_FREQUENCY, Float64(bw))
 end
 # Nr of averages
