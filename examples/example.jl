@@ -3,13 +3,12 @@ const GI = GenericInstruments
 ####################################
 # Instantiate obj
 resmgr   = GI.ResourceManager()
-niScope1 = GI.SCOPE.INSTR(:NI5122,"PXI1Slot3")
 scope1   = GI.SCOPE.INSTR(:HDO6054A, "USB0::0x05FF::0x1023::4066N51752::INSTR")
 dmm1 = GI.DMM.INSTR(:KE2000, "GPIB0::2::INSTR")
 psu1 = GI.PSU.INSTR(:KeysightE3645A, "GPIB0::5::INSTR")
 psu2 = GI.PSU.INSTR(:AgilentE3646A, "GPIB0::6::INSTR")
 awg1 = GI.AWG.INSTR(:Keysight33500B, "USB0::0x0957::0x2C07::MY52803073::INSTR")
-GI.SCOPE.set_instr_state!(resmgr, scope1, niScope1,dmm1, psu1, psu2, awg1; act = GI.connect!) #this will error if no instruments availale
+GI.SCOPE.set_instr_state!(resmgr, scope1, dmm1, psu1, psu2, awg1; act = GI.connect!) #this will error if no instruments availale
 ####################################
 # USAGE
 ####################################
