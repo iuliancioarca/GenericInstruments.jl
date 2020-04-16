@@ -1,7 +1,7 @@
 module PSU
 using Instruments
-include("..\\INSTR_TYPES.jl")
-include("..\\comm_utils.jl")
+include("../INSTR_TYPES.jl")
+include("../comm_utils.jl")
 #
 # METHOD TEMPLATES
 # basic method template: "This method has priority over the more general T:<Union{....} template"
