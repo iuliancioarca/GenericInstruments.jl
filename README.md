@@ -12,7 +12,7 @@ Please install the following before adding this package:
 2. Install PXI instrument drivers (if needed; currently supports scopes such as NI5122/5114)
 3. Install Instruments.jl as low level VISA wrapper: ]add https://github.com/BBN-Q/Instruments.jl.git
 4. ]add https://github.com/iuliancioarca/GenericInstruments.jl.git
-using GenericInstruments
+5. using GenericInstruments
 
 Supported instruments:
 1. Scope: Lecroy 6054A (should work for the entire 6xxx-8xxx series), NIScope 5122/5114/5152
