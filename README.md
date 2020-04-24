@@ -10,8 +10,7 @@ Based on https://github.com/BBN-Q/Instruments.jl. Bundles similar functionalitie
 Please install the following before adding this package:
 1. Install NIVISA (currently tested only on Windows)
 2. Install PXI instrument drivers (if needed; currently supports scopes such as NI5122/5114)
-3. Install Instruments.jl as low level VISA wrapper: ]add https://github.com/iuliancioarca/Instruments.jl.git
-4. ]add https://github.com/iuliancioarca/GenericInstruments.jl.git
+4. ]add GenericInstruments
 5. using GenericInstruments
 
 Supported instruments:
