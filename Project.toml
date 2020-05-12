@@ -1,7 +1,7 @@
 name = "GenericInstruments"
 uuid = "b8d24480-b8ee-42fe-a917-db159b4b1a29"
 authors = ["iuliancioarca"]
-version = "0.1.0"
+version = "0.2.0"
 
 [deps]
 Libdl = "8f399da3-3557-5675-b5ff-fb832c97cbdb"
