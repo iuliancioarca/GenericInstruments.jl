@@ -22,6 +22,6 @@ Supported instruments:
 4. Digital multimeters: WIP on Ketihley 2000/20001/7510. NIDmm4071(only api exposed)
 
 See examples folder for usage.
-This package is under development so expect breaking changes. It's best to add the master branch in order to be up to datw with bugfixes.
-Important Note: Because of the large number of libs necessary, a fully automated path discovery is not implemented yet. Currently only the Windows default paths are populated in: src/lib_locations.jl
-Feel to modify them as needed and rebuild the package in order to use it.
+This package is under development so expect breaking changes. It's best to add the master branch in order to be up to date with bugfixes.
+Important Note: Because of the large number of libs necessary, a fully automated path discovery is not implemented yet. Currently only the Windows default paths are populated in: src/lib_locations.jl.
+Feel free to modify them as needed and rebuild the package in order to use it.
